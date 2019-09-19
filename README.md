@@ -1,5 +1,3 @@
-Public repository including most common and general elements of Textbot AI library. 
-
 **Status:** Updatable (code is provided as-is, updates expected)
 
 # OpenTextbot
