@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """Algebra for Language Models."""
 
 #[АКТУАЛЬНО - 19.09.2019]
