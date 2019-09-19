@@ -99,7 +99,7 @@ def GetVectorNorm(WE, EmbeddingSize):
   Norm = 0.0
   for i in range(EmbeddingSize):
     Norm = Norm + WE[i]*WE[i]
-    Norm = math.sqrt(Norm)
+  Norm = math.sqrt(Norm)
 
   return Norm
 
@@ -116,8 +116,8 @@ def GetVectorNorm(WE, EmbeddingSize):
 def Add(WE1, WE2):
     
   for i in range(len(WE1)):
-        WE1[i] = WE1[i] + WE2[i]
-    WE3 = WE1
+    WE1[i] = WE1[i] + WE2[i]
+  WE3 = WE1
     
   return WE3
 
@@ -132,7 +132,12 @@ def Add(WE1, WE2):
     WE (np.array) - ВП, полученное в результате сложения ВП из списка ListWE.
 '''
 def Addn(ListWE, EmbeddingSize):
-  ...
+  
+  WEn = np.zeros(EmbeddingSize, dtype=float)
+  for i in range(len(ListWE)):
+    WEn = Add(WEn, ListWE[i])
+  WE = WEn.astype(np.float32)
+
   return WE
 
 '''
@@ -146,5 +151,10 @@ def Addn(ListWE, EmbeddingSize):
     WE3 (np.array) - ВП3, полученное в результате разности ВП1 и ВП2.
 '''
 def Subtract(WE1, WE2):
-  ...
+  
+  WE2 = WE2 * (-1)
+  for i in range(len(WE1)):
+    WE1[i] = WE1[i] + WE2[i]
+  WE3 = WE1
+
   return WE3
