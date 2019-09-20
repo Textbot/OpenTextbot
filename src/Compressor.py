@@ -195,7 +195,7 @@ def CompressWEwithClusters(ArrayWE, VocabularySize, EmbeddingSize, ListClusterSi
 Выход:
     ArrayWE (np.array(np.float32)) - массив векторных представлений.
 '''
-def DecompressWE(ArrayCompressedWE, ArrayCentroids, EmbeddingSize):
+def DecompressListWE(ArrayCompressedWE, ArrayCentroids, EmbeddingSize): #EX: DecompressWE
     
     ListWE = list()
     for i in range(len(ArrayCompressedWE)):
@@ -204,22 +204,27 @@ def DecompressWE(ArrayCompressedWE, ArrayCentroids, EmbeddingSize):
             WE.append(ArrayCentroids[j, ArrayCompressedWE[i, j], : ])
         WE_np = np.asarray(WE, np.float32).reshape(EmbeddingSize)
         ListWE.append(WE_np)
-    ArrayWE = np.asarray(ArrayWE, np.float32)
+    ArrayWE = np.asarray(ListWE, np.float32)
     
     return ArrayWE
 
 '''
-Метод разжатия одного ВП. В отличие от разжатия списка ВП в DecompressWE.
+Метод разжатия одного ВП. В отличие от разжатия списка ВП в DecompressArrayWE.
 Вход:
     CompressedWE (np.uint8) - сжатое ВП;
     ArrayCentroids (np.array(np.float32)) - 3-мерный массив [ListSubvectorSize, ListClusterSize, SubvectorSize],
         содержащий координаты центроидов кластеров;
     EmbeddingSize (int) - размерность пространства ВП.
 Выход:
-    WE (np.array(np.float32)) - векторные представление.
+    WE (np.array(np.float32)) - векторное представление.
 '''
-def DecompressSingleWE(CompressedWE, ArrayCentroids, EmbeddingSize):
-    ...
+def DecompressWE(CompressedWE, ArrayCentroids, EmbeddingSize): #EX: DecompressSingleWE
+    
+    WE = list()
+    for j in range(len(CompressedWE)):
+        WE.append(ArrayCentroids[j, CompressedWE[j], : ])
+    WE = np.asarray(WE, np.float32).reshape(EmbeddingSize)
+    
     return WE
 
 
