@@ -15,6 +15,20 @@ import numpy as np
 import Algebra
 
 '''
+Класс для хранения сжатых моделей ВП.
+
+Атрибуты:
+    ArrayCompressedWE (np.array(np.uint8)) - массив сжатых ВП;
+    ArrayCentroids (np.array(np.float32)) - 3-мерный массив [ListSubvectorSize, ListClusterSize, SubvectorSize], содержащий координаты центроидов кластеров.
+    
+'''
+
+class ClassCompressedWE (object):
+    def __init__(self, ArrayCompressedWE, ArrayCentroids):
+        self.ArrayCompressedWE = ArrayCompressedWE
+        self.ArrayCentroids = ArrayCentroids
+
+'''
 Метод записи сжатых ВП в текстовый файл.
 
 Вход:
@@ -25,10 +39,10 @@ import Algebra
 '''
 def ExportCompressedWE(Filename, ArrayCompressedWE):
   
-  f = open(Filename, 'a', encoding='utf-8-sig')
-  for i in range(len(ArrayCompressedWE)):
-    for j in ArrayCompressedWE[i]:
-      f.write(str(j) + ' ')    
+    f = open(Filename, 'a', encoding='utf-8-sig')
+    for i in range(len(ArrayCompressedWE)):
+        for j in ArrayCompressedWE[i]:
+            f.write(str(j) + ' ')    
     f.write('\n')    
    
   return 0
@@ -69,7 +83,14 @@ def ImportCompressedWE(Filename):
     Нет.
 '''
 def ExportCentroids(Filename, ArrayCentroinds, ListSubvectorSize, ListClusterSize, SubvectorSize):
-    ...
+    
+    f = open(Filename, 'a', encoding='utf-8-sig') 
+    for k in range(ListSubvectorSize):
+        for j in range(ListClusterSize):
+            for i in range(SubvectorSize):
+                f.write(str(ArrayCentroinds[i, j, k]) + ' ')    
+        f.write('\n')    
+    
     return 0
 
 
@@ -86,7 +107,17 @@ def ExportCentroids(Filename, ArrayCentroinds, ListSubvectorSize, ListClusterSiz
     
 '''
 def ImportCentroids(Filename, ListClusterSize, SubvectorSize):
-    ...
+    
+    Reader = io.open(Filename, 'r', encoding='utf-8-sig', newline='\n', errors='ignore')
+    ListCentroids = list()
+    for line in Reader: 
+        tokens = line.rstrip().split(' ') #1024
+        #Reshape to 256 x 4
+        X = np.array(tokens, dtype=np.float32)
+        X1 = X.reshape((ListClusterSize, SubvectorSize))       
+        ListCentroids.append(X1)   
+    ArrayCentroids = np.asarray(ListCentroids, np.float32)
+    
     return ArrayCentroids
 
 
