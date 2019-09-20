@@ -196,7 +196,16 @@ def CompressWEwithClusters(ArrayWE, VocabularySize, EmbeddingSize, ListClusterSi
     ArrayWE (np.array(np.float32)) - массив векторных представлений.
 '''
 def DecompressWE(ArrayCompressedWE, ArrayCentroids, EmbeddingSize):
-    ...
+    
+    ListWE = list()
+    for i in range(len(ArrayCompressedWE)):
+        WE = list()
+        for j in range(len(ArrayCompressedWE[i])):
+            WE.append(ArrayCentroids[j, ArrayCompressedWE[i, j], : ])
+        WE_np = np.asarray(WE, np.float32).reshape(EmbeddingSize)
+        ListWE.append(WE_np)
+    ArrayWE = np.asarray(ArrayWE, np.float32)
+    
     return ArrayWE
 
 '''
