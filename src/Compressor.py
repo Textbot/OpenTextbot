@@ -1,10 +1,18 @@
 #!/usr/bin/env python3
 
 '''
-Methods for word vectors compression and working with compressed vectors.
+Methods for word vectors compression and working with compressed word vectors.
 
 Методы сжатия ВП и работы с квантованными векторами.
 '''
+
+import io
+
+from sklearn.cluster import KMeans
+from sklearn.cluster import MiniBatchKMeans
+import numpy as np
+
+import Algebra
 
 '''
 Метод записи сжатых ВП в текстовый файл.
@@ -16,7 +24,13 @@ Methods for word vectors compression and working with compressed vectors.
     Нет.
 '''
 def ExportCompressedWE(Filename, ArrayCompressedWE):
-  ...
+  
+  f = open(Filename, 'a', encoding='utf-8-sig')
+  for i in range(len(ArrayCompressedWE)):
+    for j in ArrayCompressedWE[i]:
+      f.write(str(j) + ' ')    
+    f.write('\n')    
+   
   return 0
   
 
@@ -29,7 +43,15 @@ def ExportCompressedWE(Filename, ArrayCompressedWE):
     ArrayCompressedWE (np.array(np.uint8)) - массив сжатых ВП.
 '''
 def ImportCompressedWE(Filename):
-    ...
+
+    Reader = io.open(Filename, 'r', encoding='utf-8-sig', newline='\n', errors='ignore')
+    ListCompressedWE = list()
+    for line in Reader: 
+        tokens = line.rstrip().split(' ')        
+        X = np.array(tokens, dtype=np.uint8)       
+        ListCompressedWE.append(X)    
+    ArrayCompressedWE = np.asarray(ListCompressedWE, np.uint8)
+    
     return ArrayCompressedWE
 
 
