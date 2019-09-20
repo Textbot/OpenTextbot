@@ -129,15 +129,28 @@ def ImportCentroids(Filename, ListClusterSize, SubvectorSize):
     EmbeddingSize (int) - размерность пространства ВП;
     ListClusterSize (int) - число кластеров для каждого подвектора, например, 256, т.к. удобно хранить в uint8 / byte;
     SubvectorSize (int) - размерность подвектора, например 4;
-    BatchSize - размер выборки для поиска кластеров методом MiniBatchKMeans,
-        например, 1000.
+    BatchSize (int) - размер выборки для поиска кластеров методом MiniBatchKMeans, например, 1000.
 Выход:
     ArrayCentroids (np.array(np.float32)) - 3-мерный массив [ListSubvectorSize, ListClusterSize, SubvectorSize],
         содержащий координаты центроидов кластеров;
     ArrayCompressedWE (np.array(np.uint8)) - массив сжатых ВП.
 '''
 def CompressWE(ArrayWE, VocabularySize, EmbeddingSize, ListClusterSize, SubvectorSize, BatchSize):
-    ...
+    
+    ListSubvectorSize = int(EmbeddingSize / SubvectorSize)
+    X1 = ArrayWE.reshape((VocabularySize, ListSubvectorSize, SubvectorSize))
+    ListCentroids = list()
+    ListCompressorWEs = list()
+    for i in range(ListSubvectorSize):
+        x = X1[:, i, :]
+        kmeans = MiniBatchKMeans(n_clusters=ListClusterSize, random_state=0, batch_size=BatchSize).fit(x)
+        ArrayCentroid = kmeans.cluster_centers_
+        ListCentroids.append(ArrayCentroid)
+        ArrayPredict = kmeans.predict(x).astype(np.uint8)
+        ListCompressorWEs.append(ArrayPredict)        
+    ArrayCentroids = np.asarray(ListCentroids, np.float32).transpose()
+    ArrayCompressedWE = np.asarray(ListCompressorWEs, np.uint8).transpose()
+    
     return ArrayCentroids, ArrayCompressedWE
 
 '''
@@ -157,7 +170,18 @@ def CompressWE(ArrayWE, VocabularySize, EmbeddingSize, ListClusterSize, Subvecto
     ArrayCompressedWE (np.array(np.uint8)) - массив сжатых ВП.
 '''
 def CompressWEwithClusters(ArrayWE, VocabularySize, EmbeddingSize, ListClusterSize, SubvectorSize, BatchSize, ArrayCentroids):
-    ...
+    
+    ListSubvectorSize = int(EmbeddingSize / SubvectorSize)
+    X1 = ArrayWE.reshape((VocabularySize, ListSubvectorSize, SubvectorSize))
+    ListCompressedWE = list()
+    for i in range(ListSubvectorSize):
+        x = X1[:, i, :]        
+        kmeans = MiniBatchKMeans(n_clusters=ListClusterSize, random_state=0, batch_size=BatchSize)
+        kmeans.cluster_centers_ = ArrayCentroids[i]        
+        ArrayPredict = kmeans.predict(x).astype(np.uint8)
+        ListCompressedWE.append(ArrayPredict)        
+    ArrayCompressedWE = np.asarray(ListCompressedWE, np.uint8).transpose()
+    
     return ArrayCompressedWE
 
 '''
