@@ -1,7 +1,15 @@
-
+#!/usr/bin/env python3
 '''
 Кластеризация пространства ВП для быстрого поиска по сжатым ВП средствами ассиметричных ячеек Вороного.
 '''
+
+import io
+
+from sklearn.cluster import KMeans
+from sklearn.cluster import MiniBatchKMeans
+import numpy as np
+
+import Algebra
 
 '''
 Класс для представления ассиметричных ячеек Вороного.
@@ -19,6 +27,73 @@ class Voronoi (object):
         self.ListClusterListPoints = ListClusterListPoints
         self.ListArrayCentroids = ListArrayCentroids
         self.ListListClusterListPoints = ListListClusterListPoints
+
+'''
+Метод получения массива центроидов для ячеек Вороного:
+'''
+def GetCentroids(ArrayWE, ListClusterSize):
+    
+    kmeans = KMeans(n_clusters=ListClusterSize, random_state=0).fit(ArrayWE)
+    ArrayCentroids = kmeans.cluster_centers_
+    
+    return ArrayCentroids
+
+'''
+Метод быстрого получения массива центроидов для ячеек Вороного:
+'''
+def GetCentroidsFast(ArrayWE, ListClusterSize, BatchSize):
+    
+    kmeans = MiniBatchKMeans(n_clusters=ListClusterSize, random_state=0, batch_size=BatchSize).fit(ArrayWE)
+    ArrayCentroids = kmeans.cluster_centers_
+    
+    return ArrayCentroids
+
+'''
+Метод записи массива центроидов для ячеек Вороного в текстовый файл.
+
+Вход:
+Filename_Ac (str) - путь к файлу;
+ArrayCentroids (np.array(np.float32)) - массив центроидов кластеров Вороного.
+
+Выход:
+Нет.
+'''
+def ExportCentroids(Filename_Ac, ArrayCentroids):
+    """Сжимать смысла нет, т.к. размер мал, а используется в разжатом виде."""
+    
+    f = open(Filename_Ac, 'a', encoding='utf-8-sig')    
+    for i in range(len(ArrayCentroids)):
+        for j in ArrayCentroids[i]:
+            f.write(str(j) + ' ')    
+        f.write('\n') 
+    
+    return 0
+
+'''
+Метод чтения массива центроидов для ячеек Вороного из текстового файла.
+
+Вход:
+Filename_Ac (str) - путь к файлу;
+EmbeddingSize (int) - размерность пространства ВП.
+
+Выход:
+ArrayCentroids (np.array(np.float32)) - массив центроидов кластеров Вороного.
+'''
+def ImportCentroids(Filename_Ac, EmbeddingSize):
+    
+    Reader_Ac = io.open(Filename_Ac, 'r', encoding='utf-8-sig', newline='\n', errors='ignore')
+    ListCentroids = list()
+    for line in Reader_Ac: 
+        tokens = line.rstrip().split(' ')
+        X = np.array(tokens, dtype=np.float32)
+        X1 = X.reshape((EmbeddingSize))
+        
+        ListCentroids.append(X1)
+    
+    ArrayCentroids = np.asarray(ListCentroids, np.float32)
+    
+    return ArrayCentroids
+
 
 '''
 Метод кластеризации сжатых ВП для быстрого поиска по областям k-мерного пространства.
