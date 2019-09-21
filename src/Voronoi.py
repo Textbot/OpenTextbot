@@ -112,3 +112,62 @@ def VoronoiClustering(ArrayWE, ArrayCompressedWE, ListClusterSize, EmbeddingSize
     ...
     return ArrayCentroids, ListBoolSubCluster, ListClusterListPoints, ListArrayCentroids, ListListClusterListPoints 
 
+'''
+
+'''
+def VoronoiClusteringWithCentroids(ArrayCompressedWE, GlobalArrayCentroids, EmbeddingSize, Parameter, ArrayCentroids, ListClusterListPoints, ListClusterSize):
+    
+    ListBoolSubCluster = list()
+    
+    CurrentClusterIndex = int(len(ArrayCompressedWE))
+    
+    #3. Если в кластере более 1000 точек при ListClusterSize == 100, то
+    #его необходимо снова кластеризовать. Для это индексы его точек
+    #нужно заменить на индекс самого кластера (CurrentClusterIndex).
+    #Значения CurrentClusterIndex начинаются с 1000000 и т.д.
+    for i in ListClusterListPoints:
+        if (len(i) > int(ListClusterSize * Parameter)):
+            ListBoolSubCluster.append(CurrentClusterIndex)
+            #i.clear()
+            #i.append(CurrentClusterIndex)
+            CurrentClusterIndex = CurrentClusterIndex + 1            
+        else:
+            ListBoolSubCluster.append(0)
+    
+    ListArrayCentroids1 = list()
+    
+    ListListClusterListPoints1 = list() #10000 списков. Экспортировать как 10000 строк, ID точек делить пробелом.
+        
+    for i in range(len(ListClusterListPoints)):
+        if (ListBoolSubCluster[i] > 0):
+            CurrentListDecompressedWE = list()
+            #Восстановим каждую точку из кластера и добавим в список.
+            for j in ListClusterListPoints[i]:
+                CurrentListDecompressedWE.append(DecompressSingleWE(ArrayCompressedWE[j], GlobalArrayCentroids, EmbeddingSize))
+            #Превратим список в массив и подадим на вход 
+            CurrentArrayDecompressedWE = np.asarray(CurrentListDecompressedWE, np.float32)
+            #Найдем 100 центроидов и разделим все точки на 100 кластеров:
+            kmeans1 = KMeans(n_clusters=ListClusterSize, random_state=0).fit(CurrentArrayDecompressedWE)
+            ArrayCentroids1 = kmeans1.cluster_centers_
+            ListArrayCentroids1.append(ArrayCentroids1) # 100x100=10000
+            ArrayCompressedWE1 = kmeans1.predict(CurrentArrayDecompressedWE).astype(np.int32)
+        
+            ListClusterListPoints1 = [[] for i in range(ListClusterSize)]
+        
+            for j in range (len(ArrayCompressedWE1)):
+                SubClusterID = ArrayCompressedWE1[j]
+                WeIDi = ListClusterListPoints[i]
+                WeID = WeIDi[j]
+                
+                ListClusterListPoints1[SubClusterID].append(WeID)
+            
+            ListListClusterListPoints1.append(ListClusterListPoints1)
+    
+
+    for i in range(len(ListClusterListPoints)):
+        if (ListBoolSubCluster[i] > 0):
+            ListClusterListPoints[i].clear()
+            ListClusterListPoints[i].append(ListBoolSubCluster[i])
+    
+    return ListBoolSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1
+
