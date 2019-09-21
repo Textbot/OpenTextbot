@@ -59,7 +59,6 @@ ArrayCentroids (np.array(np.float32)) - массив центроидов кла
 Нет.
 '''
 def ExportCentroids(Filename_Ac, ArrayCentroids):
-    """Сжимать смысла нет, т.к. размер мал, а используется в разжатом виде."""
     
     f = open(Filename_Ac, 'a', encoding='utf-8-sig')    
     for i in range(len(ArrayCentroids)):
@@ -86,10 +85,8 @@ def ImportCentroids(Filename_Ac, EmbeddingSize):
     for line in Reader_Ac: 
         tokens = line.rstrip().split(' ')
         X = np.array(tokens, dtype=np.float32)
-        X1 = X.reshape((EmbeddingSize))
-        
-        ListCentroids.append(X1)
-    
+        X1 = X.reshape((EmbeddingSize)) 
+        ListCentroids.append(X1)    
     ArrayCentroids = np.asarray(ListCentroids, np.float32)
     
     return ArrayCentroids
