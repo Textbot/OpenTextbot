@@ -45,7 +45,7 @@ def ExportCompressedWE(Filename, ArrayCompressedWE):
             f.write(str(j) + ' ')    
     f.write('\n')    
    
-  return 0
+    return 0
   
 
 '''
