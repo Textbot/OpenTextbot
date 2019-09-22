@@ -12,7 +12,7 @@ from sklearn.cluster import KMeans
 from sklearn.cluster import MiniBatchKMeans
 import numpy as np
 
-import Algebra
+import OpenTextbot.src.Algebra
 
 '''
 Класс для хранения сжатых моделей ВП.
