@@ -74,7 +74,7 @@ def ImportCompressedWE(Filename):
 
 Вход:
     Filename (str) - путь к файлу;
-    ArrayCentroinds (np.array(np.float32)) - 3-мерный массив [ListSubvectorSize, ListClusterSize, SubvectorSize],
+    ArrayCentroids (np.array(np.float32)) - 3-мерный массив [ListSubvectorSize, ListClusterSize, SubvectorSize],
         содержащий координаты центроидов кластеров;
     ListSubvectorSize (int) - число подвекторов, например, 75, если 300-мерный вектор разбивается на 4-мерные подвектора;
     ListClusterSize (int) - число кластеров для каждого подвектора, например, 256, т.к. удобно хранить в uint8 / byte;
@@ -82,7 +82,7 @@ def ImportCompressedWE(Filename):
 Выход:
     Нет.
 '''
-def ExportCentroids(Filename, ArrayCentroinds, ListSubvectorSize, ListClusterSize, SubvectorSize):
+def ExportCentroids(Filename, ArrayCentroids, ListSubvectorSize, ListClusterSize, SubvectorSize):
     
     f = open(Filename, 'a', encoding='utf-8-sig') 
     for k in range(ListSubvectorSize):
