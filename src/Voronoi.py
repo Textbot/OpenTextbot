@@ -112,7 +112,13 @@ def VoronoiClustering(ArrayWE, ArrayCompressedWE, ListClusterSize, EmbeddingSize
     return ArrayCentroids, ListBoolSubCluster, ListClusterListPoints, ListArrayCentroids, ListListClusterListPoints 
 
 '''
-
+...
+Вход:
+    ListClusterListPoints () - ?
+Выход:
+    ListBoolSubCluster (list(int)) - список индексов подкластеров у кластера;
+    ListClusterListPoints () - ?
+    
 '''
 def VoronoiClusteringWithCentroids(ArrayCompressedWE, GlobalArrayCentroids, EmbeddingSize, Parameter, ArrayCentroids, ListClusterListPoints, ListClusterSize):
     
@@ -120,15 +126,13 @@ def VoronoiClusteringWithCentroids(ArrayCompressedWE, GlobalArrayCentroids, Embe
     
     CurrentClusterIndex = int(len(ArrayCompressedWE))
     
-    #3. Если в кластере более 1000 точек при ListClusterSize == 100, то
+    #Если в кластере более 1000 точек при ListClusterSize == 100, то
     #его необходимо снова кластеризовать. Для это индексы его точек
     #нужно заменить на индекс самого кластера (CurrentClusterIndex).
-    #Значения CurrentClusterIndex начинаются с 1000000 и т.д.
+    #Например, при мощности словаря в 1000000 значений, значения CurrentClusterIndex начинаются с 1000000 и т.д.
     for i in ListClusterListPoints:
         if (len(i) > int(ListClusterSize * Parameter)):
             ListBoolSubCluster.append(CurrentClusterIndex)
-            #i.clear()
-            #i.append(CurrentClusterIndex)
             CurrentClusterIndex = CurrentClusterIndex + 1            
         else:
             ListBoolSubCluster.append(0)
