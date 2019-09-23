@@ -174,3 +174,67 @@ def VoronoiClusteringWithCentroids(ArrayCompressedWE, GlobalArrayCentroids, Embe
     
     return ListBoolSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1
 
+
+'''
+Метод записи модели Вороного в текстовые файлы.
+Filename_Ac (str) - путь к файлу с ArrayCentroids;
+Filename_LSC (str) - путь к файлу с ListSubCluster;
+Filename_LCLP (str) - путь к файлу с ListClusterListPoints;
+Filename_Lac1 (str) - путь к файлу с ListArrayCentroids1;
+Filename_Llclp1 (str) - путь к файлу с ListListClusterListPoints1;
+ArrayCentroids (array(array(np.float32))) - массив центроидов кластеров 1-го уровня;
+ListSubCluster (int) - список индексов подкластеров кластора;
+ListClusterListPoints (List(List(int))) - список индексов точек из ArrayCompressedWE, входящих в кластер при условии, 
+                        что ListSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
+ListArrayCentroids1 (List(array(array(np.float32)))) - массив центроидов кластеров 2-го уровня;
+ListListClusterListPoints1 (List(List(List(int)))) - список индексов точек из ArrayCompressedWE, входящих в подкластеры.
+'''
+def VoronoiExport2(Filename_Ac, Filename_LBSC, Filename_LCLP,
+                   Filename_Lac1, Filename_Llclp1, 
+                   ArrayCentroids, ListSubCluster, ListClusterListPoints, 
+                   ListArrayCentroids1, ListListClusterListPoints1):
+    
+    #1. Запишем ВП центроидов 2-го уровня из ArrayCentroids в Filename_Ac:
+    #Аналогично записи любых ВП, сжимать смысла нет, т.к. размер мал,
+    #а используется в разжатом виде.
+    f01 = open(Filename_Ac, 'a', encoding='utf-8-sig')
+    
+    for i in range(len(ArrayCentroids)):
+        for j in ArrayCentroids[i]:
+            f01.write(str(j) + ' ')    
+        f01.write('\n') 
+    
+    #2. Запишем список ListBoolSubCluster:
+    f02 = open(Filename_LBSC, 'a', encoding='utf-8-sig')
+    
+    for k in ListBoolSubCluster:
+        f02.write(str(k))    
+        f02.write('\n')
+    
+    #3. Запишем списки индексов словоформ первого этапа кластеризации:
+    f03 = open(Filename_LCLP, 'a', encoding='utf-8-sig')
+    
+    for j in range (len(ListClusterListPoints)):
+        for k in ListClusterListPoints[j]:
+            f03.write(str(k) + ' ')    
+        f03.write('\n')
+    
+    #4. Запишем ВП центроидов 1-го уровня из ListArrayCentroids1 в Filename_Lac1:
+    f04 = open(Filename_Lac1, 'a', encoding='utf-8-sig')
+    
+    for i in range(len(ListArrayCentroids1)):
+        for j in (ListArrayCentroids1[i]):
+            for k in j:
+                f04.write(str(k) + ' ')    
+            f04.write('\n') 
+    
+    #5. Запишем списки индексов словоформ (один список - одна строка):
+    f05 = open(Filename_Llclp1, 'a', encoding='utf-8-sig')
+    
+    for i in range(len(ListListClusterListPoints1)):
+        for j in (ListListClusterListPoints1[i]):
+            for k in j:
+                f05.write(str(k) + ' ')    
+            f05.write('\n') 
+    ...
+    return 0
