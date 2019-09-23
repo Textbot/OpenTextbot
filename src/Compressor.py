@@ -43,7 +43,7 @@ def ExportCompressedWE(Filename, ArrayCompressedWE):
     for i in range(len(ArrayCompressedWE)):
         for j in ArrayCompressedWE[i]:
             f.write(str(j) + ' ')    
-    f.write('\n')    
+        f.write('\n')    
    
     return 0
   
