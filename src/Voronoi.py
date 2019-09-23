@@ -177,17 +177,20 @@ def VoronoiClusteringWithCentroids(ArrayCompressedWE, GlobalArrayCentroids, Embe
 
 '''
 Метод записи модели Вороного в текстовые файлы.
-Filename_Ac (str) - путь к файлу с ArrayCentroids;
-Filename_LSC (str) - путь к файлу с ListSubCluster;
-Filename_LCLP (str) - путь к файлу с ListClusterListPoints;
-Filename_Lac1 (str) - путь к файлу с ListArrayCentroids1;
-Filename_Llclp1 (str) - путь к файлу с ListListClusterListPoints1;
-ArrayCentroids (array(array(np.float32))) - массив центроидов кластеров 1-го уровня;
-ListSubCluster (int) - список индексов подкластеров кластора;
-ListClusterListPoints (List(List(int))) - список индексов точек из ArrayCompressedWE, входящих в кластер при условии, 
-                        что ListSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
-ListArrayCentroids1 (List(array(array(np.float32)))) - массив центроидов кластеров 2-го уровня;
-ListListClusterListPoints1 (List(List(List(int)))) - список индексов точек из ArrayCompressedWE, входящих в подкластеры.
+Вход:
+    Filename_Ac (str) - путь к файлу с ArrayCentroids;
+    Filename_LSC (str) - путь к файлу с ListSubCluster;
+    Filename_LCLP (str) - путь к файлу с ListClusterListPoints;
+    Filename_Lac1 (str) - путь к файлу с ListArrayCentroids1;
+    Filename_Llclp1 (str) - путь к файлу с ListListClusterListPoints1;
+    ArrayCentroids (array(array(np.float32))) - массив центроидов кластеров 1-го уровня;
+    ListSubCluster (int) - список индексов подкластеров кластора;
+    ListClusterListPoints (List(List(int))) - список индексов точек из ArrayCompressedWE, входящих в кластер при условии, 
+                                              что ListSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
+    ListArrayCentroids1 (List(array(array(np.float32)))) - массив центроидов кластеров 2-го уровня;
+    ListListClusterListPoints1 (List(List(List(int)))) - список индексов точек из ArrayCompressedWE, входящих в подкластеры.
+Выход:
+Нет.
 '''
 def VoronoiExport2(Filename_Ac, Filename_LBSC, Filename_LCLP,
                    Filename_Lac1, Filename_Llclp1, 
@@ -238,3 +241,88 @@ def VoronoiExport2(Filename_Ac, Filename_LBSC, Filename_LCLP,
             f05.write('\n') 
     ...
     return 0
+
+
+'''
+Метод импорта модели Вороного из текстовых файлов.
+Вход:
+    Filename_Ac (str) - путь к файлу с ArrayCentroids;
+    Filename_LSC (str) - путь к файлу с ListSubCluster;
+    Filename_LCLP (str) - путь к файлу с ListClusterListPoints;
+    Filename_Lac1 (str) - путь к файлу с ListArrayCentroids1;
+    Filename_Llclp1 (str) - путь к файлу с ListListClusterListPoints1;
+    ListClusterSize (int) - мощность множества кластеров 1-го уровня;
+    EmbeddingSize (int) - размерность пространства ВП.
+Выход:
+    ArrayCentroids (array(array(np.float32))) - массив центроидов кластеров 1-го уровня;
+    ListSubCluster (int) - список индексов подкластеров кластора;
+    ListClusterListPoints (List(List(int))) - список индексов точек из ArrayCompressedWE, входящих в кластер при условии, 
+                                              что ListSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
+    ListArrayCentroids1 (List(array(array(np.float32)))) - массив центроидов кластеров 2-го уровня;
+    ListListClusterListPoints1 (List(List(List(int)))) - список индексов точек из ArrayCompressedWE, входящих в подкластеры.
+'''
+
+def VoronoiImport2(Filename_Ac, Filename_LSC, Filename_LCLP,
+                   Filename_Lac1, Filename_Llclp1, ListClusterSize, EmbeddingSize):
+    #1. Filename_Ac:
+    Reader_Ac = io.open(Filename_Ac, 'r', encoding='utf-8-sig', newline='\n', errors='ignore')
+    ListCentroids = list()
+    for line in Reader_Ac: 
+        tokens = line.rstrip().split(' ')
+        X = np.array(tokens, dtype=np.float32)
+        X1 = X.reshape((EmbeddingSize))
+        
+        ListCentroids.append(X1)
+    
+    ArrayCentroids = np.asarray(ListCentroids, np.float32)
+    
+    #2. Filename_LBSC:
+    Reader_LBSC = io.open(Filename_LBSC, 'r', encoding='utf-8-sig', newline='\n', errors='ignore')
+    ListBoolSubCluster = list()
+    for line in Reader_LBSC:
+        ListBoolSubCluster.append(int(line))
+    
+    #3. Filename_LCLP:
+    Reader_LCLP = io.open(Filename_LCLP, 'r', encoding='utf-8-sig', newline='\n', errors='ignore')
+    ListClusterListPoints = list()
+    for line in Reader_LCLP:
+        tokens = line.rstrip().split(' ')
+        ListPoints = list()
+        for i in tokens:
+            if (i != ''):
+                ListPoints.append(int(i))
+            else:
+                break
+        
+        ListClusterListPoints.append(ListPoints)
+    
+    #4. Filename_Lac1:
+    Reader_Lac1 = io.open(Filename_Lac1, 'r', encoding='utf-8-sig', newline='\n', errors='ignore')
+    ListCentroids1 = list()
+    for line in Reader_Lac1: 
+        tokens = line.rstrip().split(' ')
+        X = np.array(tokens, dtype=np.float32)
+        X1 = X.reshape((-1, EmbeddingSize))
+        
+        ListCentroids1.append(X1)
+    
+    ArrayCentroids1 = np.asarray(ListCentroids1, np.float32)
+    ArrayArrayCentroids1 = ArrayCentroids1.reshape((-1, ListClusterSize, EmbeddingSize))
+    
+    ListArrayCentroids1 = ArrayArrayCentroids1.tolist()
+    
+    #5. Filename_Llclp1:
+    Reader_Llclp1 = io.open(Filename_Llclp1, 'r', encoding='utf-8-sig', newline='\n', errors='ignore')
+    ListListClusterListPoints1 = list()
+    ListClusterListPoints1 = list()
+    for line in Reader_Llclp1: 
+        tokens = line.rstrip().split(' ')
+        X = np.array(tokens, dtype=np.int32)
+        
+        ListClusterListPoints1.append(X)
+    
+    for i in range(0, len(ListClusterListPoints1), ListClusterSize):
+        ListListClusterListPoints1.append(ListClusterListPoints1[i:int(i+ListClusterSize)])
+        
+    ...
+    return ArrayCentroids, ListBoolSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1
