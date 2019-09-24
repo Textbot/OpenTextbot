@@ -326,3 +326,79 @@ def VoronoiImport2(Filename_Ac, Filename_LSC, Filename_LCLP,
         
     ...
     return ArrayCentroids, ListBoolSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1
+
+
+'''
+Метод быстрого поиска точки в сжатых ВП с использование ассиметричных кластеров Вороного.
+'''
+def VoronoiLookup2(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingSize, ArrayCentroids, ListBoolSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1):
+    #0. Создадим список точек, в которых мы будем добавлять индексы ВП:
+    CurrentListPoints = list()
+    #1. Берем 2 наиболее близких к CurrentWE центроида из ArrayCentroids:
+    CurrentListID = Algebra.EuclidianMaxN(ArrayCentroids, CurrentWE, 2)
+    if (ListBoolSubCluster[CurrentListID[0]] == 0):
+        CurrentListPoints.extend(ListClusterListPoints[CurrentListID[0]])
+    else:
+        ID = ListBoolSubCluster[CurrentListID[0]] - len(ListCompressedWE)
+        CurrentListID2a = Algebra.EuclidianMaxN(ListArrayCentroids1[ID], CurrentWE, 2)
+        CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2a[0]])
+        CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2a[1]])
+    if (ListBoolSubCluster[CurrentListID[1]] == 0):
+        CurrentListPoints.extend(ListClusterListPoints[CurrentListID[0]])
+    else:
+        ID = ListBoolSubCluster[CurrentListID[1]] - len(ListCompressedWE)
+        CurrentListID2b = Algebra.EuclidianMaxN(ListArrayCentroids1[ID], CurrentWE, 2)
+        CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2b[0]])
+        CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2b[1]])
+    
+    #5. По списку индексов CurrentListPoints1 расжимаем точки-кандидаты:
+    CurrentListCompressedWE = list()
+    for i in CurrentListPoints:
+        CurrentListCompressedWE.append(ListCompressedWE[i])
+    CurrentArrayCompressedWE = np.asarray(CurrentListCompressedWE)
+    CurrentArrayWE = DecompressWE(CurrentArrayCompressedWE, GlobalArrayCentroids, EmbeddingSize)
+    #6. Ищем 1 точку-победитель:
+    ID = Algebra.EuclidianMax(CurrentArrayWE, CurrentWE)
+    CurrentID = CurrentListPoints[ID]
+    
+    ...
+    return CurrentID
+
+
+'''
+Метод быстрого поиска СПИСКА точек в сжатых ВП с использование ассиметричных кластеров Вороного.
+'''
+def VoronoiLookupN2(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingSize, ArrayCentroids, ListBoolSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1, N):
+    #0. Создадим список точек, в которых мы будем добавлять индексы ВП:
+    CurrentListPoints = list()
+    #1. Берем 2 наиболее близких к CurrentWE центроида из ArrayCentroids:
+    CurrentListID = Algebra.EuclidianMaxN(ArrayCentroids, CurrentWE, 2)
+    if (ListBoolSubCluster[CurrentListID[0]] == 0):
+        CurrentListPoints.extend(ListClusterListPoints[CurrentListID[0]])
+    else:
+        ID = ListBoolSubCluster[CurrentListID[0]] - len(ListCompressedWE)
+        CurrentListID2a = Algebra.EuclidianMaxN(ListArrayCentroids1[ID], CurrentWE, 2)
+        CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2a[0]])
+        CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2a[1]])
+    if (ListBoolSubCluster[CurrentListID[1]] == 0):
+        CurrentListPoints.extend(ListClusterListPoints[CurrentListID[0]])
+    else:
+        ID = ListBoolSubCluster[CurrentListID[1]] - len(ListCompressedWE)
+        CurrentListID2b = Algebra.EuclidianMaxN(ListArrayCentroids1[ID], CurrentWE, 2)
+        CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2b[0]])
+        CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2b[1]])
+    
+    #5. По списку индексов CurrentListPoints1 расжимаем точки-кандидаты:
+    CurrentListCompressedWE = list()
+    for i in CurrentListPoints:
+        CurrentListCompressedWE.append(ListCompressedWE[i])
+    CurrentArrayCompressedWE = np.asarray(CurrentListCompressedWE)
+    CurrentArrayWE = DecompressWE(CurrentArrayCompressedWE, GlobalArrayCentroids, EmbeddingSize)
+    #6. Ищем 1 точку-победитель:
+    ListID = Algebra.EuclidianMaxN(CurrentArrayWE, CurrentWE, N)
+    ListCurrentID = list()
+    for ID in ListID:
+        ListCurrentID.append(CurrentListPoints[ID])
+    
+    ...
+    return ListCurrentID
