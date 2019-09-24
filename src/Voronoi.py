@@ -14,21 +14,27 @@ import OpenTextbot.src.Algebra
 Класс для представления ассиметричных ячеек Вороного.
 Атрибуты:
     ArrayCentroids - массив центроидов кластеров Вороного;
-    ListBoolSubCluster - список указателей на то, имеет ли кластер подкластеры: если 0, то не имеет, а если не ноль то это глобальный индекс кластера;
+    ListSubCluster - список указателей на то, имеет ли кластер подкластеры: если 0, то не имеет, а если не ноль то это глобальный индекс кластера;
     ListClusterListPoints - список индексов точек из ArrayCompressedWE, входящих в кластер при условии, что ListBoolSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
     ListArrayCentroids - список массивов центороидов вложенных кластеров (подкластеров) Вороного;
     ListListClusterListPoints - список индексов точек из ArrayCompressedWE, входящих в подкластеры.
 '''
 class Voronoi (object):
-    def __init__(self, ArrayCentroids, ListBoolSubCluster, ListClusterListPoints, ListArrayCentroids, ListListClusterListPoints):
+    def __init__(self, ArrayCentroids, ListSubCluster, ListClusterListPoints, ListArrayCentroids, ListListClusterListPoints):
         self.ArrayCentroids = ArrayCentroids
-        self.ListBoolSubCluster = ListBoolSubCluster
+        self.ListSubCluster = ListSubCluster
         self.ListClusterListPoints = ListClusterListPoints
         self.ListArrayCentroids = ListArrayCentroids
         self.ListListClusterListPoints = ListListClusterListPoints
 
 '''
 Метод получения массива центроидов для ячеек Вороного:
+Вход:
+ArrayWE (np.array(np.float32)) - массив ВП токенов;
+ListClusterSize (int) - число кластеров Вороного 1-го уровня.
+
+Выход:
+ArrayCentroidsVoronoi(array(np.float32)) - массив центроидов кластеров Вороного.
 '''
 def GetCentroids(ArrayWE, ListClusterSize):
     
@@ -107,6 +113,8 @@ ListClusterSize (int) - число кластеров Вороного 1-го у
 BatchSize (int) - размер выборки.
 
 Выход:
+ListClusterListPoints - список индексов ВП, входящих в кластер, при условии, что ListSubCluster[i] == 0. 
+                        В противном случае имеем глобальный индекс кластера.
 
 '''
 def GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize, BatchSize):
@@ -123,7 +131,9 @@ def GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize, BatchSize):
 
     return ListClusterListPoints
 
+
 '''
+...
 Метод кластеризации сжатых ВП для быстрого поиска по областям k-мерного пространства.
 Вход:
     ArrayWE - массив ВП для генерации кластеров верхнего уровня;
@@ -134,27 +144,14 @@ def GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize, BatchSize):
 Выход:
     ModelVoronoi(Voronoi) - модель ассиметричных ячеек Вороного:
         ModelVoronoi.ArrayCentroids - массив центроидов кластеров Вороного;
-        ModelVoronoi.ListBoolSubCluster - список указателей на то, имеет ли кластер подкластеры: если 0, то не имеет, а если не ноль то это глобальный индекс кластера;
+        ModelVoronoi.ListSubCluster - список указателей на то, имеет ли кластер подкластеры: если 0, то не имеет, а если не ноль то это глобальный индекс кластера;
         ModelVoronoi.ListClusterListPoints - список индексов точек из ArrayCompressedWE, входящих в кластер при условии, что ListBoolSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
         ModelVoronoi.ListArrayCentroids - список массивов центороидов вложенных кластеров (подкластеров) Вороного;
         ModelVoronoi.ListListClusterListPoints - список индексов точек из ArrayCompressedWE, входящих в подкластеры.
-''' 
-def VoronoiClustering(ArrayWE, ArrayCompressedWE, ListClusterSize, EmbeddingSize, GlobalArrayCentroids):
-    ...
-    return ArrayCentroids, ListBoolSubCluster, ListClusterListPoints, ListArrayCentroids, ListListClusterListPoints 
-
 '''
-...
-Вход:
-    ListClusterListPoints () - ?
-Выход:
-    ListBoolSubCluster (list(int)) - список индексов подкластеров у кластера;
-    ListClusterListPoints () - ?
+def VoronoiClustering(ArrayCompressedWE, GlobalArrayCentroids, EmbeddingSize, Parameter=10, ArrayCentroids, ListClusterListPoints, ListClusterSize):
     
-'''
-def VoronoiClusteringWithCentroids(ArrayCompressedWE, GlobalArrayCentroids, EmbeddingSize, Parameter, ArrayCentroids, ListClusterListPoints, ListClusterSize):
-    
-    ListBoolSubCluster = list()
+    ListSubCluster = list()
     
     CurrentClusterIndex = int(len(ArrayCompressedWE))
     
@@ -164,17 +161,17 @@ def VoronoiClusteringWithCentroids(ArrayCompressedWE, GlobalArrayCentroids, Embe
     #Например, при мощности словаря в 1000000 значений, значения CurrentClusterIndex начинаются с 1000000 и т.д.
     for i in ListClusterListPoints:
         if (len(i) > int(ListClusterSize * Parameter)):
-            ListBoolSubCluster.append(CurrentClusterIndex)
+            ListSubCluster.append(CurrentClusterIndex)
             CurrentClusterIndex = CurrentClusterIndex + 1            
         else:
-            ListBoolSubCluster.append(0)
+            ListSubCluster.append(0)
     
     ListArrayCentroids1 = list()
     
     ListListClusterListPoints1 = list() #10000 списков. Экспортировать как 10000 строк, ID точек делить пробелом.
         
     for i in range(len(ListClusterListPoints)):
-        if (ListBoolSubCluster[i] > 0):
+        if (ListSubCluster[i] > 0):
             CurrentListDecompressedWE = list()
             #Восстановим каждую точку из кластера и добавим в список.
             for j in ListClusterListPoints[i]:
@@ -200,11 +197,11 @@ def VoronoiClusteringWithCentroids(ArrayCompressedWE, GlobalArrayCentroids, Embe
     
 
     for i in range(len(ListClusterListPoints)):
-        if (ListBoolSubCluster[i] > 0):
+        if (ListSubCluster[i] > 0):
             ListClusterListPoints[i].clear()
-            ListClusterListPoints[i].append(ListBoolSubCluster[i])
+            ListClusterListPoints[i].append(ListSubCluster[i])
     
-    return ListBoolSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1
+    return ListSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1
 
 
 '''
