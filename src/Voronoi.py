@@ -33,19 +33,26 @@ class Voronoi (object):
 def GetCentroids(ArrayWE, ListClusterSize):
     
     kmeans = KMeans(n_clusters=ListClusterSize, random_state=0).fit(ArrayWE)
-    ArrayCentroids = kmeans.cluster_centers_
+    ArrayCentroidsVoronoi = kmeans.cluster_centers_
     
-    return ArrayCentroids
+    return ArrayCentroidsVoronoi
 
 '''
 Метод быстрого получения массива центроидов для ячеек Вороного:
+Вход:
+ArrayWE (np.array(np.float32)) - массив ВП токенов;
+ListClusterSize (int) - число кластеров Вороного 1-го уровня;
+BatchSize (int) - размер выборки.
+
+Выход:
+ArrayCentroidsVoronoi(array(np.float32)) - массив центроидов кластеров Вороного.
 '''
 def GetCentroidsFast(ArrayWE, ListClusterSize, BatchSize):
     
     kmeans = MiniBatchKMeans(n_clusters=ListClusterSize, random_state=0, batch_size=BatchSize).fit(ArrayWE)
-    ArrayCentroids = kmeans.cluster_centers_
+    ArrayCentroidsVoronoi = kmeans.cluster_centers_
     
-    return ArrayCentroids
+    return ArrayCentroidsVoronoi
 
 '''
 Метод записи массива центроидов для ячеек Вороного в текстовый файл.
@@ -57,11 +64,11 @@ ArrayCentroids (np.array(np.float32)) - массив центроидов кла
 Выход:
 Нет.
 '''
-def ExportCentroids(Filename_Ac, ArrayCentroids):
+def ExportCentroids(Filename_Ac, ArrayCentroidsVoronoi):
     
     f = open(Filename_Ac, 'a', encoding='utf-8-sig')    
-    for i in range(len(ArrayCentroids)):
-        for j in ArrayCentroids[i]:
+    for i in range(len(ArrayCentroidsVoronoi)):
+        for j in ArrayCentroidsVoronoi[i]:
             f.write(str(j) + ' ')    
         f.write('\n') 
     
@@ -75,7 +82,7 @@ Filename_Ac (str) - путь к файлу;
 EmbeddingSize (int) - размерность пространства ВП.
 
 Выход:
-ArrayCentroids (np.array(np.float32)) - массив центроидов кластеров Вороного.
+ArrayCentroidsVoronoi (np.array(np.float32)) - массив центроидов кластеров Вороного.
 '''
 def ImportCentroids(Filename_Ac, EmbeddingSize):
     
@@ -86,10 +93,35 @@ def ImportCentroids(Filename_Ac, EmbeddingSize):
         X = np.array(tokens, dtype=np.float32)
         X1 = X.reshape((EmbeddingSize)) 
         ListCentroids.append(X1)    
-    ArrayCentroids = np.asarray(ListCentroids, np.float32)
+    ArrayCentroidsVoronoi = np.asarray(ListCentroids, np.float32)
     
-    return ArrayCentroids
+    return ArrayCentroidsVoronoi
 
+
+'''
+Метод генерации кластеров Вороного 1-го уровня на основе центроидов Вороного.
+Вход:
+ArrayWE (np.array(np.float32)) - массив ВП токенов;
+ArrayCentroidsVoronoi (np.array(np.float32)) - массив центроидов кластеров Вороного;
+ListClusterSize (int) - число кластеров Вороного 1-го уровня;
+BatchSize (int) - размер выборки.
+
+Выход:
+
+'''
+def GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize, BatchSize):
+    
+    kmeans = MiniBatchKMeans(n_clusters=ListClusterSize, random_state=0, batch_size=BatchSize)
+    kmeans.cluster_centers_ = ArrayCentroids
+    
+    ListClusterListPoints = [[] for i in range(ListClusterSize)]
+    
+    ArrayClusteredWE = kmeans.predict(ArrayWE).astype(np.int32)
+    for i in range (len(ArrayWE)):
+        ID = ArrayClusteredWE[i]
+        ListClusterListPoints[ID].append(i)
+
+    return ListClusterListPoints
 
 '''
 Метод кластеризации сжатых ВП для быстрого поиска по областям k-мерного пространства.
