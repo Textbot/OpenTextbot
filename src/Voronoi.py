@@ -117,9 +117,9 @@ ListClusterListPoints (List(List(int))) - список индексов ВП, в
                         В противном случае имеем глобальный индекс кластера.
 
 '''
-def GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize, BatchSize):
+def GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize):
     
-    kmeans = MiniBatchKMeans(n_clusters=ListClusterSize, random_state=0, batch_size=BatchSize)
+    kmeans = MiniBatchKMeans(n_clusters=ListClusterSize, random_state=0, batch_size=100)
     kmeans.cluster_centers_ = ArrayCentroids
     
     ListClusterListPoints = [[] for i in range(ListClusterSize)]
@@ -137,7 +137,6 @@ def GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize, BatchSize):
 Метод кластеризации сжатых ВП для быстрого поиска по областям k-мерного пространства.
 Вход:
     ArrayWE (np.array(np.array(np.float32))) - массив ВП токенов;
-    ArrayCompressedWE (np.array(np.array(np.uint8))) - массив сжатых ВП;
     ListClusterSize (int) - число кластеров (подкластеров в кластере);
     EmbeddingSize (int) - размерность пространства ВП;
     ArrayCentroids - массив центроидов для ArrayCompressedWE.
@@ -149,11 +148,12 @@ def GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize, BatchSize):
         ModelVoronoi.ListSubCluster - список указателей на то, имеет ли кластер подкластеры: если 0, то не имеет, а если не ноль то это глобальный индекс кластера;
         ModelVoronoi.ListClusterListPoints - список индексов точек из ArrayCompressedWE, входящих в кластер при условии, что ListBoolSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
         ModelVoronoi.ListArrayCentroids - список массивов центороидов вложенных кластеров (подкластеров) Вороного;
-        ModelVoronoi.ListListClusterListPoints - список индексов точек из ArrayCompressedWE, входящих в подкластеры.
+        ModelVoronoi.ListClusterListPoints (List(List(int))) - список индексов ВП, входящих в кластер, при условии, 
+                                что ListSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера.
 '''
-def VoronoiClustering(ArrayCompressedWE, ArrayCentroids, EmbeddingSize, Parameter=10, ListClusterListPoints, ListClusterSize):
+def VoronoiClustering(ArrayWE, EmbeddingSize, Parameter=10, ListClusterListPoints, ListClusterSize):
     
-    ListClusterListPoints = GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize, ?BatchSize)
+    ListClusterListPoints = GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize)
     
     ListSubCluster = list()
     
