@@ -34,14 +34,14 @@ ArrayWE (np.array(np.float32)) - массив ВП токенов;
 ListClusterSize (int) - число кластеров Вороного 1-го уровня.
 
 Выход:
-ArrayCentroidsVoronoi(array(np.float32)) - массив центроидов кластеров Вороного.
+ArrayCentroids (np.array(np.array(np.float32))) - массив центроидов кластеров Вороного.
 '''
 def GetCentroids(ArrayWE, ListClusterSize):
     
     kmeans = KMeans(n_clusters=ListClusterSize, random_state=0).fit(ArrayWE)
-    ArrayCentroidsVoronoi = kmeans.cluster_centers_
+    ArrayCentroids = kmeans.cluster_centers_
     
-    return ArrayCentroidsVoronoi
+    return ArrayCentroids
 
 '''
 Метод быстрого получения массива центроидов для ячеек Вороного:
@@ -51,30 +51,30 @@ ListClusterSize (int) - число кластеров Вороного 1-го у
 BatchSize (int) - размер выборки.
 
 Выход:
-ArrayCentroidsVoronoi(array(np.float32)) - массив центроидов кластеров Вороного.
+ArrayCentroids (np.array(np.array(np.float32))) - массив центроидов кластеров Вороного.
 '''
 def GetCentroidsFast(ArrayWE, ListClusterSize, BatchSize):
     
     kmeans = MiniBatchKMeans(n_clusters=ListClusterSize, random_state=0, batch_size=BatchSize).fit(ArrayWE)
-    ArrayCentroidsVoronoi = kmeans.cluster_centers_
+    ArrayCentroids = kmeans.cluster_centers_
     
-    return ArrayCentroidsVoronoi
+    return ArrayCentroids
 
 '''
 Метод записи массива центроидов для ячеек Вороного в текстовый файл.
 
 Вход:
 Filename_Ac (str) - путь к файлу;
-ArrayCentroids (np.array(np.float32)) - массив центроидов кластеров Вороного.
+ArrayCentroids (np.array(np.array(np.float32))) - массив центроидов кластеров Вороного.
 
 Выход:
 Нет.
 '''
-def ExportCentroids(Filename_Ac, ArrayCentroidsVoronoi):
+def ExportCentroids(Filename_Ac, ArrayCentroids):
     
     f = open(Filename_Ac, 'a', encoding='utf-8-sig')    
-    for i in range(len(ArrayCentroidsVoronoi)):
-        for j in ArrayCentroidsVoronoi[i]:
+    for i in range(len(ArrayCentroids)):
+        for j in ArrayCentroids[i]:
             f.write(str(j) + ' ')    
         f.write('\n') 
     
@@ -88,7 +88,7 @@ Filename_Ac (str) - путь к файлу;
 EmbeddingSize (int) - размерность пространства ВП.
 
 Выход:
-ArrayCentroidsVoronoi (np.array(np.float32)) - массив центроидов кластеров Вороного.
+ArrayCentroids (np.array(np.array(np.float32))) - массив центроидов кластеров Вороного.
 '''
 def ImportCentroids(Filename_Ac, EmbeddingSize):
     
@@ -99,16 +99,16 @@ def ImportCentroids(Filename_Ac, EmbeddingSize):
         X = np.array(tokens, dtype=np.float32)
         X1 = X.reshape((EmbeddingSize)) 
         ListCentroids.append(X1)    
-    ArrayCentroidsVoronoi = np.asarray(ListCentroids, np.float32)
+    ArrayCentroids = np.asarray(ListCentroids, np.float32)
     
-    return ArrayCentroidsVoronoi
+    return ArrayCentroids
 
 
 '''
 Метод генерации кластеров Вороного 1-го уровня на основе центроидов Вороного.
 Вход:
 ArrayWE (np.array(np.array(np.float32))) - массив ВП токенов;
-ArrayCentroidsVoronoi (np.array(np.array(np.float32))) - массив центроидов кластеров Вороного;
+ArrayCentroids (np.array(np.array(np.float32))) - массив центроидов кластеров Вороного;
 ListClusterSize (int) - число кластеров Вороного 1-го уровня;
 BatchSize (int) - размер выборки.
 
@@ -117,10 +117,10 @@ ListClusterListPoints (List(List(int))) - список индексов ВП, в
                         В противном случае имеем глобальный индекс кластера.
 
 '''
-def GetClustersVoronoi(ArrayWE, ArrayCentroidsVoronoi, ListClusterSize):
+def GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize):
     
     kmeans = MiniBatchKMeans(n_clusters=ListClusterSize, random_state=0, batch_size=100)
-    kmeans.cluster_centers_ = ArrayCentroidsVoronoi
+    kmeans.cluster_centers_ = ArrayCentroids
     
     ListClusterListPoints = [[] for i in range(ListClusterSize)]
     
@@ -140,18 +140,18 @@ def GetClustersVoronoi(ArrayWE, ArrayCentroidsVoronoi, ListClusterSize):
     ListClusterSize (int) - число кластеров (подкластеров в кластере);
     EmbeddingSize (int) - размерность пространства ВП;
     ArrayCentroidsVoronoi (np.array(np.array(np.float32))) - массив центроидов кластеров Вороного;
-    Parameter (int) - ?
+    Parameter (int) - коэффициент поиска (по умолчанию 10).
     
 Выход:
     ModelVoronoi(Voronoi) - модель ассиметричных ячеек Вороного:
-        ModelVoronoi.ArrayCentroidsVoronoi - массив центроидов кластеров Вороного;
+        ModelVoronoi.ArrayCentroids - массив центроидов кластеров Вороного;
         ModelVoronoi.ListSubCluster - список указателей на то, имеет ли кластер подкластеры: если 0, то не имеет, а если не ноль то это глобальный индекс кластера;
         ModelVoronoi.ListClusterListPoints - список индексов точек из ArrayCompressedWE, входящих в кластер при условии, что ListBoolSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
         ModelVoronoi.ListArrayCentroids - список массивов центороидов вложенных кластеров (подкластеров) Вороного;
         ModelVoronoi.ListClusterListPoints (List(List(int))) - список индексов ВП, входящих в кластер, при условии, 
                                 что ListSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера.
 '''
-def VoronoiClustering(ArrayWE, ListClusterSize, EmbeddingSize, Parameter=10, ArrayCentroidsVoronoi):
+def VoronoiClustering(ArrayWE, ListClusterSize, EmbeddingSize, Parameter=10, ArrayCentroids):
     
     ListClusterListPoints = GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize)
     
@@ -205,7 +205,9 @@ def VoronoiClustering(ArrayWE, ListClusterSize, EmbeddingSize, Parameter=10, Arr
             ListClusterListPoints[i].clear()
             ListClusterListPoints[i].append(ListSubCluster[i])
     
-    return ListSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1
+    ModelVoronoi = Voronoi(ArrayCentroids, ListSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1)
+    
+    return ModelVoronoi
 
 
 '''
@@ -214,21 +216,21 @@ def VoronoiClustering(ArrayWE, ListClusterSize, EmbeddingSize, Parameter=10, Arr
     Filename_Ac (str) - путь к файлу с ArrayCentroids;
     Filename_LSC (str) - путь к файлу с ListSubCluster;
     Filename_LCLP (str) - путь к файлу с ListClusterListPoints;
-    Filename_Lac1 (str) - путь к файлу с ListArrayCentroids1;
-    Filename_Llclp1 (str) - путь к файлу с ListListClusterListPoints1;
+    Filename_Lac (str) - путь к файлу с ListArrayCentroids;
+    Filename_Llclp (str) - путь к файлу с ListListClusterListPoints;
     ArrayCentroids (array(array(np.float32))) - массив центроидов кластеров 1-го уровня;
     ListSubCluster (int) - список индексов подкластеров кластора;
     ListClusterListPoints (List(List(int))) - список индексов точек из ArrayCompressedWE, входящих в кластер при условии, 
                                               что ListSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
-    ListArrayCentroids1 (List(array(array(np.float32)))) - массив центроидов кластеров 2-го уровня;
-    ListListClusterListPoints1 (List(List(List(int)))) - список индексов точек из ArrayCompressedWE, входящих в подкластеры.
+    ListArrayCentroids (List(array(array(np.float32)))) - массив центроидов кластеров 2-го уровня;
+    ListListClusterListPoints (List(List(List(int)))) - список индексов точек из ArrayCompressedWE, входящих в подкластеры.
 Выход:
 Нет.
 '''
 def VoronoiExport2(Filename_Ac, Filename_LBSC, Filename_LCLP,
-                   Filename_Lac1, Filename_Llclp1, 
+                   Filename_Lac, Filename_Llclp, 
                    ArrayCentroids, ListSubCluster, ListClusterListPoints, 
-                   ListArrayCentroids1, ListListClusterListPoints1):
+                   ListArrayCentroids, ListListClusterListPoints):
     
     #1. Запишем ВП центроидов 2-го уровня из ArrayCentroids в Filename_Ac:
     #Аналогично записи любых ВП, сжимать смысла нет, т.к. размер мал,
