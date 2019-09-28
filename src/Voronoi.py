@@ -117,10 +117,10 @@ ListClusterListPoints (List(List(int))) - список индексов ВП, в
                         В противном случае имеем глобальный индекс кластера.
 
 '''
-def GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize):
+def GetClustersVoronoi(ArrayWE, ArrayCentroidsVoronoi, ListClusterSize):
     
     kmeans = MiniBatchKMeans(n_clusters=ListClusterSize, random_state=0, batch_size=100)
-    kmeans.cluster_centers_ = ArrayCentroids
+    kmeans.cluster_centers_ = ArrayCentroidsVoronoi
     
     ListClusterListPoints = [[] for i in range(ListClusterSize)]
     
@@ -139,19 +139,19 @@ def GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize):
     ArrayWE (np.array(np.array(np.float32))) - массив ВП токенов;
     ListClusterSize (int) - число кластеров (подкластеров в кластере);
     EmbeddingSize (int) - размерность пространства ВП;
-    ArrayCentroids - массив центроидов для ArrayCompressedWE.
-    ListClusterListPoints (List(List(int))) - список индексов ВП, входящих в кластер, при условии, что ListSubCluster[i] == 0. 
-                                              В противном случае имеем глобальный индекс кластера.
+    ArrayCentroidsVoronoi (np.array(np.array(np.float32))) - массив центроидов кластеров Вороного;
+    Parameter (int) - ?
+    
 Выход:
     ModelVoronoi(Voronoi) - модель ассиметричных ячеек Вороного:
-        ModelVoronoi.ArrayCentroids - массив центроидов кластеров Вороного;
+        ModelVoronoi.ArrayCentroidsVoronoi - массив центроидов кластеров Вороного;
         ModelVoronoi.ListSubCluster - список указателей на то, имеет ли кластер подкластеры: если 0, то не имеет, а если не ноль то это глобальный индекс кластера;
         ModelVoronoi.ListClusterListPoints - список индексов точек из ArrayCompressedWE, входящих в кластер при условии, что ListBoolSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
         ModelVoronoi.ListArrayCentroids - список массивов центороидов вложенных кластеров (подкластеров) Вороного;
         ModelVoronoi.ListClusterListPoints (List(List(int))) - список индексов ВП, входящих в кластер, при условии, 
                                 что ListSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера.
 '''
-def VoronoiClustering(ArrayWE, EmbeddingSize, Parameter=10, ListClusterListPoints, ListClusterSize):
+def VoronoiClustering(ArrayWE, ListClusterSize, EmbeddingSize, Parameter=10, ArrayCentroidsVoronoi):
     
     ListClusterListPoints = GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize)
     
