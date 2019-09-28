@@ -176,22 +176,22 @@ def VoronoiClustering(ArrayWE, ListClusterSize, EmbeddingSize, ArrayCentroids):
         
     for i in range(len(ListClusterListPoints)):
         if (ListSubCluster[i] > 0):
-            CurrentListDecompressedWE = list()
+            CurrentListWE = list()
             #Восстановим каждую точку из кластера и добавим в список.
             for j in ListClusterListPoints[i]:
-                CurrentListDecompressedWE.append(DecompressSingleWE(ArrayCompressedWE[j], GlobalArrayCentroids, EmbeddingSize))
+                CurrentListWE.append(ArrayWE[j])
             #Превратим список в массив и подадим на вход 
-            CurrentArrayDecompressedWE = np.asarray(CurrentListDecompressedWE, np.float32)
+            CurrentArrayWE = np.asarray(CurrentListWE, np.float32)
             #Найдем 100 центроидов и разделим все точки на 100 кластеров:
-            kmeans1 = KMeans(n_clusters=ListClusterSize, random_state=0).fit(CurrentArrayDecompressedWE)
+            kmeans1 = KMeans(n_clusters=ListClusterSize, random_state=0).fit(CurrentArrayWE)
             ArrayCentroids1 = kmeans1.cluster_centers_
             ListArrayCentroids1.append(ArrayCentroids1) # 100x100=10000
-            ArrayCompressedWE1 = kmeans1.predict(CurrentArrayDecompressedWE).astype(np.int32)
+            ArrayPoints1 = kmeans1.predict(CurrentArrayWE).astype(np.int32)
         
             ListClusterListPoints1 = [[] for i in range(ListClusterSize)]
         
-            for j in range (len(ArrayCompressedWE1)):
-                SubClusterID = ArrayCompressedWE1[j]
+            for j in range (len(ArrayPoints1)):
+                SubClusterID = ArrayPoints1[j]
                 WeIDi = ListClusterListPoints[i]
                 WeID = WeIDi[j]
                 
