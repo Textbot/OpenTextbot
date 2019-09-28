@@ -146,7 +146,7 @@ def GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize):
     ModelVoronoi(Voronoi) - модель ассиметричных ячеек Вороного:
         ModelVoronoi.ArrayCentroids - массив центроидов кластеров Вороного;
         ModelVoronoi.ListSubCluster - список указателей на то, имеет ли кластер подкластеры: если 0, то не имеет, а если не ноль то это глобальный индекс кластера;
-        ModelVoronoi.ListClusterListPoints - список индексов точек из ArrayWE, входящих в кластер при условии, что ListBoolSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
+        ModelVoronoi.ListClusterListPoints - список индексов точек из ArrayWE, входящих в кластер при условии, что ListSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
         ModelVoronoi.ListArrayCentroids - список массивов центороидов вложенных кластеров (подкластеров) Вороного;
         ModelVoronoi.ListClusterListPoints (List(List(int))) - список индексов ВП, входящих в кластер, при условии, 
                                 что ListSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера.
@@ -242,10 +242,10 @@ def VoronoiExport2(Filename_Ac, Filename_LBSC, Filename_LCLP,
             f01.write(str(j) + ' ')    
         f01.write('\n') 
     
-    #2. Запишем список ListBoolSubCluster:
+    #2. Запишем список ListSubCluster:
     f02 = open(Filename_LBSC, 'a', encoding='utf-8-sig')
     
-    for k in ListBoolSubCluster:
+    for k in ListSubCluster:
         f02.write(str(k))    
         f02.write('\n')
     
@@ -290,7 +290,7 @@ def VoronoiExport2(Filename_Ac, Filename_LBSC, Filename_LCLP,
     EmbeddingSize (int) - размерность пространства ВП.
 Выход:
     ArrayCentroids (array(array(np.float32))) - массив центроидов кластеров 1-го уровня;
-    ListSubCluster (List(int)) - список индексов подкластеров кластора;
+    ListSubCluster (List(int)) - список индексов подкластеров кластера;
     ListClusterListPoints (List(List(int))) - список индексов точек из ArrayWE, входящих в кластер при условии, 
                                               что ListSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
     ListArrayCentroids1 (List(array(array(np.float32)))) - массив центроидов кластеров 2-го уровня;
@@ -313,9 +313,9 @@ def VoronoiImport2(Filename_Ac, Filename_LSC, Filename_LCLP,
     
     #2. Filename_LBSC:
     Reader_LBSC = io.open(Filename_LBSC, 'r', encoding='utf-8-sig', newline='\n', errors='ignore')
-    ListBoolSubCluster = list()
+    ListSubCluster = list()
     for line in Reader_LBSC:
-        ListBoolSubCluster.append(int(line))
+        ListSubCluster.append(int(line))
     
     #3. Filename_LCLP:
     Reader_LCLP = io.open(Filename_LCLP, 'r', encoding='utf-8-sig', newline='\n', errors='ignore')
@@ -360,28 +360,28 @@ def VoronoiImport2(Filename_Ac, Filename_LSC, Filename_LCLP,
         ListListClusterListPoints1.append(ListClusterListPoints1[i:int(i+ListClusterSize)])
         
     ...
-    return ArrayCentroids, ListBoolSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1
+    return ArrayCentroids, ListSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1
 
 
 '''
 Метод быстрого поиска точки в сжатых ВП с использование ассиметричных кластеров Вороного.
 '''
-def VoronoiLookup2(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingSize, ArrayCentroids, ListBoolSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1):
+def VoronoiLookup2(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingSize, ArrayCentroids, ListSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1):
     #0. Создадим список точек, в которых мы будем добавлять индексы ВП:
     CurrentListPoints = list()
     #1. Берем 2 наиболее близких к CurrentWE центроида из ArrayCentroids:
     CurrentListID = Algebra.EuclidianMaxN(ArrayCentroids, CurrentWE, 2)
-    if (ListBoolSubCluster[CurrentListID[0]] == 0):
+    if (ListSubCluster[CurrentListID[0]] == 0):
         CurrentListPoints.extend(ListClusterListPoints[CurrentListID[0]])
     else:
-        ID = ListBoolSubCluster[CurrentListID[0]] - len(ListCompressedWE)
+        ID = ListSubCluster[CurrentListID[0]] - len(ListCompressedWE)
         CurrentListID2a = Algebra.EuclidianMaxN(ListArrayCentroids1[ID], CurrentWE, 2)
         CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2a[0]])
         CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2a[1]])
-    if (ListBoolSubCluster[CurrentListID[1]] == 0):
+    if (ListSubCluster[CurrentListID[1]] == 0):
         CurrentListPoints.extend(ListClusterListPoints[CurrentListID[0]])
     else:
-        ID = ListBoolSubCluster[CurrentListID[1]] - len(ListCompressedWE)
+        ID = ListSubCluster[CurrentListID[1]] - len(ListCompressedWE)
         CurrentListID2b = Algebra.EuclidianMaxN(ListArrayCentroids1[ID], CurrentWE, 2)
         CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2b[0]])
         CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2b[1]])
@@ -403,22 +403,22 @@ def VoronoiLookup2(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingS
 '''
 Метод быстрого поиска СПИСКА точек в сжатых ВП с использование ассиметричных кластеров Вороного.
 '''
-def VoronoiLookupN2(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingSize, ArrayCentroids, ListBoolSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1, N):
+def VoronoiLookupN2(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingSize, ArrayCentroids, ListSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1, N):
     #0. Создадим список точек, в которых мы будем добавлять индексы ВП:
     CurrentListPoints = list()
     #1. Берем 2 наиболее близких к CurrentWE центроида из ArrayCentroids:
     CurrentListID = Algebra.EuclidianMaxN(ArrayCentroids, CurrentWE, 2)
-    if (ListBoolSubCluster[CurrentListID[0]] == 0):
+    if (ListSubCluster[CurrentListID[0]] == 0):
         CurrentListPoints.extend(ListClusterListPoints[CurrentListID[0]])
     else:
-        ID = ListBoolSubCluster[CurrentListID[0]] - len(ListCompressedWE)
+        ID = ListSubCluster[CurrentListID[0]] - len(ListCompressedWE)
         CurrentListID2a = Algebra.EuclidianMaxN(ListArrayCentroids1[ID], CurrentWE, 2)
         CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2a[0]])
         CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2a[1]])
-    if (ListBoolSubCluster[CurrentListID[1]] == 0):
+    if (ListSubCluster[CurrentListID[1]] == 0):
         CurrentListPoints.extend(ListClusterListPoints[CurrentListID[0]])
     else:
-        ID = ListBoolSubCluster[CurrentListID[1]] - len(ListCompressedWE)
+        ID = ListSubCluster[CurrentListID[1]] - len(ListCompressedWE)
         CurrentListID2b = Algebra.EuclidianMaxN(ListArrayCentroids1[ID], CurrentWE, 2)
         CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2b[0]])
         CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2b[1]])
