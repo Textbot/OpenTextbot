@@ -140,9 +140,8 @@ def GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize):
     ArrayWE (np.array(np.array(np.float32))) - массив ВП токенов;
     ListClusterSize (int) - число кластеров (подкластеров в кластере);
     EmbeddingSize (int) - размерность пространства ВП;
-    ArrayCentroidsVoronoi (np.array(np.array(np.float32))) - массив центроидов кластеров Вороного;
-    Parameter (int) - коэффициент поиска (по умолчанию 10).
-    
+    ArrayCentroids (np.array(np.array(np.float32))) - массив центроидов кластеров Вороного.
+        
 Выход:
     ModelVoronoi(Voronoi) - модель ассиметричных ячеек Вороного:
         ModelVoronoi.ArrayCentroids - массив центроидов кластеров Вороного;
@@ -152,7 +151,7 @@ def GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize):
         ModelVoronoi.ListClusterListPoints (List(List(int))) - список индексов ВП, входящих в кластер, при условии, 
                                 что ListSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера.
 '''
-def VoronoiClustering(ArrayWE, ListClusterSize, EmbeddingSize, Parameter=10, ArrayCentroids):
+def VoronoiClustering(ArrayWE, ListClusterSize, EmbeddingSize, ArrayCentroids):
     
     ListClusterListPoints = GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize)
     
@@ -165,7 +164,7 @@ def VoronoiClustering(ArrayWE, ListClusterSize, EmbeddingSize, Parameter=10, Arr
     #нужно заменить на индекс самого кластера (CurrentClusterIndex).
     #Например, при мощности словаря в 1000000 значений, значения CurrentClusterIndex начинаются с 1000000 и т.д.
     for i in ListClusterListPoints:
-        if (len(i) > int(ListClusterSize * Parameter)):
+        if (len(i) > int(ListClusterSize * 10)):
             ListSubCluster.append(CurrentClusterIndex)
             CurrentClusterIndex = CurrentClusterIndex + 1            
         else:
