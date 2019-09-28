@@ -9,6 +9,7 @@ from sklearn.cluster import MiniBatchKMeans
 import numpy as np
 
 import OpenTextbot.src.Algebra
+import OpenTextbot.src.Compressor
 
 '''
 Класс для представления ассиметричных ячеек Вороного.
