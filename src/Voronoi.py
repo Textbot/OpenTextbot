@@ -16,9 +16,9 @@ import OpenTextbot.src.Compressor
 Атрибуты:
     ArrayCentroids - массив центроидов кластеров Вороного;
     ListSubCluster - список указателей на то, имеет ли кластер подкластеры: если 0, то не имеет, а если не ноль то это глобальный индекс кластера;
-    ListClusterListPoints - список индексов точек из ArrayCompressedWE, входящих в кластер при условии, что ListSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
+    ListClusterListPoints - список индексов точек из ArrayWE, входящих в кластер при условии, что ListSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
     ListArrayCentroids - список массивов центороидов вложенных кластеров (подкластеров) Вороного;
-    ListListClusterListPoints - список индексов точек из ArrayCompressedWE, входящих в подкластеры.
+    ListListClusterListPoints - список индексов точек из ArrayWE, входящих в подкластеры.
 '''
 class Voronoi (object):
     def __init__(self, ArrayCentroids, ListSubCluster, ListClusterListPoints, ListArrayCentroids, ListListClusterListPoints):
@@ -146,7 +146,7 @@ def GetClustersVoronoi(ArrayWE, ArrayCentroids, ListClusterSize):
     ModelVoronoi(Voronoi) - модель ассиметричных ячеек Вороного:
         ModelVoronoi.ArrayCentroids - массив центроидов кластеров Вороного;
         ModelVoronoi.ListSubCluster - список указателей на то, имеет ли кластер подкластеры: если 0, то не имеет, а если не ноль то это глобальный индекс кластера;
-        ModelVoronoi.ListClusterListPoints - список индексов точек из ArrayCompressedWE, входящих в кластер при условии, что ListBoolSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
+        ModelVoronoi.ListClusterListPoints - список индексов точек из ArrayWE, входящих в кластер при условии, что ListBoolSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
         ModelVoronoi.ListArrayCentroids - список массивов центороидов вложенных кластеров (подкластеров) Вороного;
         ModelVoronoi.ListClusterListPoints (List(List(int))) - список индексов ВП, входящих в кластер, при условии, 
                                 что ListSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера.
@@ -157,7 +157,7 @@ def VoronoiClustering(ArrayWE, ListClusterSize, EmbeddingSize, ArrayCentroids):
     
     ListSubCluster = list()
     
-    CurrentClusterIndex = int(len(ArrayCompressedWE))
+    CurrentClusterIndex = int(len(ArrayWE))
     
     #Если в кластере более 1000 точек при ListClusterSize == 100, то
     #его необходимо снова кластеризовать. Для это индексы его точек
@@ -220,10 +220,10 @@ def VoronoiClustering(ArrayWE, ListClusterSize, EmbeddingSize, ArrayCentroids):
     Filename_Llclp (str) - путь к файлу с ListListClusterListPoints;
     ArrayCentroids (array(array(np.float32))) - массив центроидов кластеров 1-го уровня;
     ListSubCluster (int) - список индексов подкластеров кластора;
-    ListClusterListPoints (List(List(int))) - список индексов точек из ArrayCompressedWE, входящих в кластер при условии, 
+    ListClusterListPoints (List(List(int))) - список индексов точек из ArrayWE, входящих в кластер при условии, 
                                               что ListSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
     ListArrayCentroids (List(array(array(np.float32)))) - массив центроидов кластеров 2-го уровня;
-    ListListClusterListPoints (List(List(List(int)))) - список индексов точек из ArrayCompressedWE, входящих в подкластеры.
+    ListListClusterListPoints (List(List(List(int)))) - список индексов точек из ArrayWE, входящих в подкластеры.
 Выход:
 Нет.
 '''
@@ -291,10 +291,10 @@ def VoronoiExport2(Filename_Ac, Filename_LBSC, Filename_LCLP,
 Выход:
     ArrayCentroids (array(array(np.float32))) - массив центроидов кластеров 1-го уровня;
     ListSubCluster (List(int)) - список индексов подкластеров кластора;
-    ListClusterListPoints (List(List(int))) - список индексов точек из ArrayCompressedWE, входящих в кластер при условии, 
+    ListClusterListPoints (List(List(int))) - список индексов точек из ArrayWE, входящих в кластер при условии, 
                                               что ListSubCluster[i] == 0. В противном случае имеем глобальный индекс кластера;
     ListArrayCentroids1 (List(array(array(np.float32)))) - массив центроидов кластеров 2-го уровня;
-    ListListClusterListPoints1 (List(List(List(int)))) - список индексов точек из ArrayCompressedWE, входящих в подкластеры.
+    ListListClusterListPoints1 (List(List(List(int)))) - список индексов точек из ArrayWE, входящих в подкластеры.
 '''
 
 def VoronoiImport2(Filename_Ac, Filename_LSC, Filename_LCLP,
