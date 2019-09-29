@@ -350,7 +350,7 @@ def VoronoiImport(Filename_Ac, Filename_LSC, Filename_LCLP,
     Reader_Llclp = io.open(Filename_Llclp, 'r', encoding='utf-8-sig', newline='\n', errors='ignore')
     ListListClusterListPoints = list()
     ListClusterListPoints1 = list()
-    for line in Reader_Llclp1: 
+    for line in Reader_Llclp: 
         tokens = line.rstrip().split(' ')
         X = np.array(tokens, dtype=np.int32)
         
