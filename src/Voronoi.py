@@ -392,7 +392,7 @@ def VoronoiLookup2(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingS
     for i in CurrentListPoints:
         CurrentListCompressedWE.append(ListCompressedWE[i])
     CurrentArrayCompressedWE = np.asarray(CurrentListCompressedWE)
-    CurrentArrayWE = Compressor.DecompressWE(CurrentArrayCompressedWE, GlobalArrayCentroids, EmbeddingSize)
+    CurrentArrayWE = Compressor.DecompressListWE(CurrentArrayCompressedWE, GlobalArrayCentroids, EmbeddingSize)
     #6. Ищем 1 точку-победитель:
     ID = Algebra.EuclidianMax(CurrentArrayWE, CurrentWE)
     CurrentID = CurrentListPoints[ID]
@@ -429,7 +429,7 @@ def VoronoiLookupN2(CurrentWE, ListCompressedWE, GlobalArrayCentroids, Embedding
     for i in CurrentListPoints:
         CurrentListCompressedWE.append(ListCompressedWE[i])
     CurrentArrayCompressedWE = np.asarray(CurrentListCompressedWE)
-    CurrentArrayWE = Compressor.DecompressWE(CurrentArrayCompressedWE, GlobalArrayCentroids, EmbeddingSize)
+    CurrentArrayWE = Compressor.DecompressListWE(CurrentArrayCompressedWE, GlobalArrayCentroids, EmbeddingSize)
     #6. Ищем 1 точку-победитель:
     ListID = Algebra.EuclidianMaxN(CurrentArrayWE, CurrentWE, N)
     ListCurrentID = list()
