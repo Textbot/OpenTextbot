@@ -260,8 +260,8 @@ def VoronoiExport(Filename_Ac, Filename_LBSC, Filename_LCLP,
     #4. Запишем ВП центроидов 1-го уровня из ListArrayCentroids1 в Filename_Lac:
     f04 = open(Filename_Lac, 'a', encoding='utf-8-sig')
     
-    for i in range(len(ListArrayCentroids1)):
-        for j in (ListArrayCentroids1[i]):
+    for i in range(len(ListArrayCentroids)):
+        for j in (ListArrayCentroid1[i]):
             for k in j:
                 f04.write(str(k) + ' ')    
             f04.write('\n') 
@@ -269,8 +269,8 @@ def VoronoiExport(Filename_Ac, Filename_LBSC, Filename_LCLP,
     #5. Запишем списки индексов словоформ (один список - одна строка):
     f05 = open(Filename_Llclp, 'a', encoding='utf-8-sig')
     
-    for i in range(len(ListListClusterListPoints1)):
-        for j in (ListListClusterListPoints1[i]):
+    for i in range(len(ListListClusterListPoints)):
+        for j in (ListListClusterListPoints[i]):
             for k in j:
                 f05.write(str(k) + ' ')    
             f05.write('\n') 
