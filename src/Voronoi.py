@@ -359,8 +359,9 @@ def VoronoiImport(Filename_Ac, Filename_LSC, Filename_LCLP,
     for i in range(0, len(ListClusterListPoints1), ListClusterSize):
         ListListClusterListPoints.append(ListClusterListPoints1[i:int(i+ListClusterSize)])
         
+    ModelVoronoi = Voronoi(ArrayCentroids, ListSubCluster, ListClusterListPoints, ListArrayCentroids, ListListClusterListPoints)
     ...
-    return ArrayCentroids, ListSubCluster, ListClusterListPoints, ListArrayCentroids, ListListClusterListPoints
+    return ModelVoronoi
 
 
 '''
