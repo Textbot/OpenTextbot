@@ -8,8 +8,8 @@ from sklearn.cluster import KMeans
 from sklearn.cluster import MiniBatchKMeans
 import numpy as np
 
-import OpenTextbot.src.Algebra
-import OpenTextbot.src.Compressor
+import OpenTextbot.src.Algebra as Algebra
+import OpenTextbot.src.Compressor as Compressor
 
 '''
 Класс для представления ассиметричных ячеек Вороного.
@@ -392,7 +392,7 @@ def VoronoiLookup2(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingS
     for i in CurrentListPoints:
         CurrentListCompressedWE.append(ListCompressedWE[i])
     CurrentArrayCompressedWE = np.asarray(CurrentListCompressedWE)
-    CurrentArrayWE = DecompressWE(CurrentArrayCompressedWE, GlobalArrayCentroids, EmbeddingSize)
+    CurrentArrayWE = Compressor.DecompressWE(CurrentArrayCompressedWE, GlobalArrayCentroids, EmbeddingSize)
     #6. Ищем 1 точку-победитель:
     ID = Algebra.EuclidianMax(CurrentArrayWE, CurrentWE)
     CurrentID = CurrentListPoints[ID]
@@ -429,7 +429,7 @@ def VoronoiLookupN2(CurrentWE, ListCompressedWE, GlobalArrayCentroids, Embedding
     for i in CurrentListPoints:
         CurrentListCompressedWE.append(ListCompressedWE[i])
     CurrentArrayCompressedWE = np.asarray(CurrentListCompressedWE)
-    CurrentArrayWE = DecompressWE(CurrentArrayCompressedWE, GlobalArrayCentroids, EmbeddingSize)
+    CurrentArrayWE = Compressor.DecompressWE(CurrentArrayCompressedWE, GlobalArrayCentroids, EmbeddingSize)
     #6. Ищем 1 точку-победитель:
     ListID = Algebra.EuclidianMaxN(CurrentArrayWE, CurrentWE, N)
     ListCurrentID = list()
