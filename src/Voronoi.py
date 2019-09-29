@@ -311,10 +311,10 @@ def VoronoiImport(Filename_Ac, Filename_LSC, Filename_LCLP,
     
     ArrayCentroids = np.asarray(ListCentroids, np.float32)
     
-    #2. Filename_LBSC:
-    Reader_LBSC = io.open(Filename_LBSC, 'r', encoding='utf-8-sig', newline='\n', errors='ignore')
+    #2. Filename_LSC:
+    Reader_LSC = io.open(Filename_LSC, 'r', encoding='utf-8-sig', newline='\n', errors='ignore')
     ListSubCluster = list()
-    for line in Reader_LBSC:
+    for line in Reader_LSC:
         ListSubCluster.append(int(line))
     
     #3. Filename_LCLP:
