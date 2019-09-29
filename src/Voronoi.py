@@ -241,6 +241,7 @@ def VoronoiExport(Filename_Ac, Filename_LBSC, Filename_LCLP,
         for j in ArrayCentroids[i]:
             f01.write(str(j) + ' ')    
         f01.write('\n') 
+    f01.close()
     
     #2. Запишем список ListSubCluster:
     f02 = open(Filename_LBSC, 'a', encoding='utf-8-sig')
@@ -248,6 +249,7 @@ def VoronoiExport(Filename_Ac, Filename_LBSC, Filename_LCLP,
     for k in ListSubCluster:
         f02.write(str(k))    
         f02.write('\n')
+    f02.close()
     
     #3. Запишем списки индексов словоформ первого этапа кластеризации:
     f03 = open(Filename_LCLP, 'a', encoding='utf-8-sig')
@@ -256,15 +258,17 @@ def VoronoiExport(Filename_Ac, Filename_LBSC, Filename_LCLP,
         for k in ListClusterListPoints[j]:
             f03.write(str(k) + ' ')    
         f03.write('\n')
+    f03.close()
     
     #4. Запишем ВП центроидов 1-го уровня из ListArrayCentroids1 в Filename_Lac:
     f04 = open(Filename_Lac, 'a', encoding='utf-8-sig')
     
     for i in range(len(ListArrayCentroids)):
-        for j in (ListArrayCentroid1[i]):
+        for j in (ListArrayCentroids[i]):
             for k in j:
                 f04.write(str(k) + ' ')    
             f04.write('\n') 
+    f04.close()
     
     #5. Запишем списки индексов словоформ (один список - одна строка):
     f05 = open(Filename_Llclp, 'a', encoding='utf-8-sig')
@@ -274,7 +278,8 @@ def VoronoiExport(Filename_Ac, Filename_LBSC, Filename_LCLP,
             for k in j:
                 f05.write(str(k) + ' ')    
             f05.write('\n') 
-    ...
+    f05.close()
+    
     return 0
 
 
