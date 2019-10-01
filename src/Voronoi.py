@@ -372,7 +372,7 @@ def VoronoiImport(Filename_Ac, Filename_LSC, Filename_LCLP,
 '''
 Метод быстрого поиска точки в сжатых ВП с использование ассиметричных кластеров Вороного.
 '''
-def VoronoiLookup2(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingSize, ArrayCentroids, ListSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1):
+def VoronoiLookup(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingSize, ArrayCentroids, ListSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1):
     #0. Создадим список точек, в которых мы будем добавлять индексы ВП:
     CurrentListPoints = list()
     #1. Берем 2 наиболее близких к CurrentWE центроида из ArrayCentroids:
@@ -409,7 +409,7 @@ def VoronoiLookup2(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingS
 '''
 Метод быстрого поиска СПИСКА точек в сжатых ВП с использование ассиметричных кластеров Вороного.
 '''
-def VoronoiLookupN2(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingSize, ArrayCentroids, ListSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1, N):
+def VoronoiLookupN(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingSize, ArrayCentroids, ListSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1, N):
     #0. Создадим список точек, в которых мы будем добавлять индексы ВП:
     CurrentListPoints = list()
     #1. Берем 2 наиболее близких к CurrentWE центроида из ArrayCentroids:
