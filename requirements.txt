@@ -1,0 +1,7 @@
+tensorflow-gpu==1.13.1
+tensorflow-hub
+sentencepiece
+tf-sentencepiece
+simpleneighbors
+nltk
+spacy
