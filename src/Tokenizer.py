@@ -94,8 +94,7 @@ def get_word_input(tokens, max_seq_length):
   ::param::tokens - массив токенов
   ::param::max_seq_length - максимальная длина последовательности (int)
   
-  ::return::word_input - массив индексов слов длины max_seq_length, соотв. предложению sentence (np.array(int))
-  
+  ::return::word_input - массив индексов слов длины max_seq_length, соотв. предложению sentence (np.array(int)) 
   '''
   iword = 1
   word_input = list()
@@ -111,10 +110,3 @@ def get_word_input(tokens, max_seq_length):
   word_input = word_input + [0] * (max_seq_length - len(word_input))
   
   return word_input
-
-def get_text():
-  '''Метод генерации текста.
-  
-  
-  '''
-  ...
