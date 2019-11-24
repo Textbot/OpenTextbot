@@ -87,3 +87,9 @@ def get_word_input(tokens):
       word_input.append(iword)
       
   return word_input
+
+def get_text():
+  '''
+  Метод генерации текста.
+  '''
+  ...
