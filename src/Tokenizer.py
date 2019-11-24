@@ -5,12 +5,25 @@ vocab_path = folder+'/vocab.txt'
 
 tokenizer = tokenization.FullTokenizer(vocab_file=vocab_path, do_lower_case=False)
 
-def tokenize1(sentence):
+def tokenize1(sentence, max_seq_length):
+  '''Токенизация одного предложения с маской или без.
   
-  sentence = sentence.replace(' [MASK] ','[MASK]'); sentence = sentence.replace('[MASK] ','[MASK]'); sentence = sentence.replace(' [MASK]','[MASK]')  # удаляем лишние пробелы
-  sentence = sentence.split('[MASK]')             # разбиваем строку по маске
-  tokens = ['[CLS]']                              # фраза всегда должна начинаться на [CLS]
-  # обычные строки преобразуем в токены с помощью tokenizer.tokenize(), вставляя между ними [MASK]
+  ::param::sentence - предложение строкой (str)
+  ::param::max_seq_length - максимальная длина последовательности (int)
+  
+  ::return::token_input - массив индексов токенов длины max_seq_length, соотв. предложению sentence (np.array(int))
+  ::return::mask_input - массив масок (1 - [MASK]; 0 - нет) длины max_seq_length, соотв. предложению sentence (np.array(int))
+  ::return::seg_input - массив индексов предложений (0 - первое; 1 - второе) длины max_seq_length, соотв. предложению sentence (np.array(int))
+  
+  
+  '''
+  
+  sentence = sentence.replace(' [MASK] ','[MASK]')
+  sentence = sentence.replace('[MASK] ','[MASK]') 
+  sentence = sentence.replace(' [MASK]','[MASK]')
+  sentence = sentence.split('[MASK]')            
+  tokens = ['[CLS]']  
+  
   for i in range(len(sentence)):
     if i == 0:
         tokens = tokens + tokenizer.tokenize(sentence[i]) 
@@ -20,14 +33,14 @@ def tokenize1(sentence):
 
   token_input = tokenizer.convert_tokens_to_ids(tokens)
 
-  token_input = token_input + [0] * (512 - len(token_input))
+  token_input = token_input + [0] * (max_seq_length - len(token_input))
 
-  mask_input = [0]*512
+  mask_input = [0] * max_seq_length
   for i in range(len(mask_input)):
     if token_input[i] == 103:
         mask_input[i] = 1
 
-  seg_input = [0]*512
+  seg_input = [0] * max_seq_length
 
   token_input = np.asarray([token_input])
   mask_input = np.asarray([mask_input])
@@ -35,7 +48,7 @@ def tokenize1(sentence):
   
   return token_input, mask_input, seg_input, tokens
 
-def tokenize2(sentence1, sentence2):
+def tokenize2(sentence1, sentence2, max_seq_length):
   
   tokens1 = tokenizer.tokenize(sentence1)
   tokens2 = tokenizer.tokenize(sentence2)
@@ -43,14 +56,14 @@ def tokenize2(sentence1, sentence2):
   tokens = ['[CLS]'] + tokens1 + ['[SEP]'] + tokens2 + ['[SEP]']
   
   token_input = tokenizer.convert_tokens_to_ids(tokens)      
-  token_input = token_input + [0] * (512 - len(token_input))
+  token_input = token_input + [0] * (max_seq_length - len(token_input))
   
-  mask_input = [0] * 512
+  mask_input = [0] * max_seq_length
   
-  seg_input = [0]*512
-  len_1 = len(tokens1) + 2                   # длина первой фразы, +2 - включая начальный CLS и разделитель SEP
-  for i in range(len(tokens2)+1):            # +1, т.к. включая последний SEP
-    seg_input[len_1 + i] = 1                # маскируем вторую фразу, включая последний SEP, единицами
+  seg_input = [0] * max_seq_length
+  len_1 = len(tokens1) + 2     
+  for i in range(len(tokens2) + 1):  
+    seg_input[len_1 + i] = 1  
 
   token_input = np.asarray([token_input])
   mask_input = np.asarray([mask_input])
@@ -59,6 +72,9 @@ def tokenize2(sentence1, sentence2):
   return token_input, mask_input, seg_input, tokens
   
 def get_word_input(tokens):
+  '''Метод для 
+  
+  '''
   iword = 0
   word_input = list()
   word_input.append(0)
