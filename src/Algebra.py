@@ -10,23 +10,19 @@ from scipy.spatial.distance import cdist, euclidean
 from sklearn.cluster import KMeans
 
 
-'''
-Метод нахождения классической евклидовой метрики в пространстве ВП 
 
-    Вход:
-        ListWE (list(np.array(np.float32))) - список векторных представлений,
-            среди которых мы будем искать наиболее близкую точку к WE;
-        WE (np.array(np.float32)) - исходное векторное представление.
-        
-    Выход:
-        ListDistance - список мер близости WE к каждой точке из ListWE.
-        
-'''
-def Euclidian(ListWE, WE):  
-    
-  ListDistance = cdist(ListWE, [WE])
+def Euclidian(ListWE, WE): 
+    '''Метод нахождения классической евклидовой метрики в пространстве ВП 
 
-  return ListDistance
+    :param ListWE: список векторных представлений (list(np.array(np.float32))) 
+    :param WE: векторное представление (np.array(np.float32))
+        
+    :return ListDistance: список мер близости WE к каждой точке из ListWE
+        
+    '''    
+    ListDistance = cdist(ListWE, [WE])
+
+    return ListDistance
 
 '''
 Метод нахождения наиболее близкой точки по классической евклидовой метрике в пространстве ВП 
