@@ -2,7 +2,7 @@
 
 """Algebra for Language Models."""
 
-#[АКТУАЛЬНО - 05.11.2019]
+#[АКТУАЛЬНО - 25.11.2019]
 
 import math
 import numpy as np
