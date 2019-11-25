@@ -120,50 +120,43 @@ def Add(WE1, WE2):
     
   return WE3
 
-'''
-Метод сложения произвольного числа векторов в пространстве ВП.
 
-Вход:
-    ListWE (list(np.array)) - список векторных представлений;
-    EmbeddingSize (int) - размерность пространства ВП.
-    
-Выход: 
-    WE (np.array) - ВП, полученное в результате сложения ВП из списка ListWE.
-'''
 def Addn(ListWE, EmbeddingSize):
-  
-  WEn = np.zeros(EmbeddingSize, dtype=float)
-  for i in range(len(ListWE)):
-    WEn = Add(WEn, ListWE[i])
-  WE = WEn.astype(np.float32)
+    '''Метод сложения произвольного числа векторов в пространстве ВП.
 
-  return WE
+    :param ListWE: список векторных представлений (list(np.array)).
+    :param EmbeddingSize: размерность пространства ВП (int).    
+    :return WE: ВП, полученное в результате сложения ВП из списка ListWE (np.array).
+    '''
+    WEn = np.zeros(EmbeddingSize, dtype=float)
+    for i in range(len(ListWE)):
+        WEn = Add(WEn, ListWE[i])
+    WE = WEn.astype(np.float32)
 
-'''
-Метод вычисления разности векторов в пространстве ВП.
+    return WE
 
-Вход:
-    WE1 (np.array) - векторное представление 1;
-    WE2 (np.array) - векторное представление 2.
     
-Выход: 
-    WE3 (np.array) - ВП3, полученное в результате разности ВП1 и ВП2.
-'''
 def Subtract(WE1, WE2):
-  
-  WE2 = WE2 * (-1)
-  for i in range(len(WE1)):
-    WE1[i] = WE1[i] + WE2[i]
-  WE3 = WE1
+    '''Метод вычисления разности векторов в пространстве ВП.
 
-  return WE3
+    :param WE1: векторное представление 1 (np.array).
+    :param WE2: векторное представление 2 (np.array).    
+    :return WE3: векторное представление 3, полученное в результате разности ВП1 и ВП2 (np.array).
+    '''
+    WE2 = WE2 * (-1)
+    for i in range(len(WE1)):
+        WE1[i] = WE1[i] + WE2[i]
+    WE3 = WE1
+
+    return WE3
 
 
 def Mean(ListWE, Type=None):
   '''Метод поиска "средних" значений списка ВП.
     
-  :param ListWE: - список векторных представлений (list(np.array(np.float32)))
-  :return WE: - "среднее" значение ВП (np.array(np.float32))
+  :param ListWE: список векторных представлений (list(np.array(np.float32)))
+  :param Type: тип "среднего" ('Cluster' - центроид кластера, 'GM' - геометрическая медиана, ['Mean', None] - np.mean)
+  :return WE: "среднее" значение ВП (np.array(np.float32))
    
   '''
   ArrayWE = np.asarray(ListWE, dtype=np.float32)
@@ -176,7 +169,7 @@ def Mean(ListWE, Type=None):
         kmeans = KMeans(n_clusters=1, random_state=0).fit(ArrayWE)
         CentroidWE = kmeans.cluster_centers_
         WE = np.array(CentroidWE)
-    elif Type == 'Centroid':
+    elif Type == 'GM':
         eps=1e-5 #Максимальная разница между двумя прогнозируемыми точками
         ArrayWE64 = ArrayWE.astype(np.float64)
         X = ArrayWE64
