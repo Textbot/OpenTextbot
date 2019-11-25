@@ -7,6 +7,7 @@
 import math
 import numpy as np
 from scipy.spatial.distance import cdist, euclidean
+from sklearn.cluster import KMeans
 
 
 '''
@@ -160,3 +161,61 @@ def Subtract(WE1, WE2):
   WE3 = WE1
 
   return WE3
+
+
+def Mean(ListWE, Type=None):
+  '''Метод поиска "средних" значений списка ВП.
+    
+  :param ListWE: - список векторных представлений (list(np.array(np.float32)))
+  :return WE: - "среднее" значение ВП (np.array(np.float32))
+   
+  '''
+  ArrayWE = np.asarray(ListWE, dtype=np.float32)
+  WE = np.zeros(len(ListWE[0]))
+    
+  if (len(ListWE) == 1):
+    WE = ListWE[0]
+  else:
+    if Type == 'Cluster':
+        kmeans = KMeans(n_clusters=1, random_state=0).fit(ArrayWE)
+        CentroidWE = kmeans.cluster_centers_
+        WE = np.array(CentroidWE)
+    elif Type == 'Centroid':
+        eps=1e-5 #Максимальная разница между двумя прогнозируемыми точками
+        ArrayWE64 = ArrayWE.astype(np.float64)
+        X = ArrayWE64
+    
+        y = np.mean(X, 0)
+
+        while True:
+            D = cdist(X, [y])
+            nonzeros = (D != 0)[:, 0]
+
+            Dinv = 1 / D[nonzeros]
+            Dinvs = np.sum(Dinv)
+            W = Dinv / Dinvs
+            T = np.sum(W * X[nonzeros], 0)
+
+            num_zeros = len(X) - np.sum(nonzeros)
+            if num_zeros == 0:
+                y1 = T
+            elif num_zeros == len(X):
+                GM = y.astype(np.float32)
+                WE = GM
+                break
+            else:
+                R = (T - y) * Dinvs
+                r = np.linalg.norm(R)
+                rinv = 0 if r == 0 else num_zeros/r
+                y1 = max(0, 1-rinv)*T + min(1, rinv)*y
+
+            if euclidean(y, y1) < eps:
+                GM = y1.astype(np.float32)
+                WE = GM
+                break
+
+            y = y1
+    else: #'Mean' or None
+        WE = np.mean(ArrayWE, axis=0)
+    
+    return WE
