@@ -8,14 +8,14 @@ tokenizer = tokenization.FullTokenizer(vocab_file=vocab_path, do_lower_case=Fals
 def tokenize1(sentence, max_seq_length):
   '''Токенизация одного предложения с маской или без.
   
-  ::param::sentence - предложение строкой (str)
-  ::param::max_seq_length - максимальная длина последовательности (int)
+  :param sentence: предложение строкой (str)
+  :param max_seq_length: максимальная длина последовательности (int)
   
-  ::return::token_input - массив индексов токенов длины max_seq_length, соотв. предложению sentence (np.array(int))
-  ::return::mask_input - массив масок (1 - [MASK]; 0 - нет) длины max_seq_length, соотв. предложению sentence (np.array(int))
-  ::return::seg_input - массив индексов предложений (0 - первое; 1 - второе) длины max_seq_length, соотв. предложению sentence (np.array(int))
-  ::return::word_input - массив индексов слов длины max_seq_length, соотв. предложению sentence (np.array(int))
-  ::return::tokens - массив токенов
+  :return token_input: массив индексов токенов длины max_seq_length, соотв. предложению sentence (np.array(int))
+  :return mask_input: массив масок (1 - [MASK]; 0 - нет) длины max_seq_length, соотв. предложению sentence (np.array(int))
+  :return seg_input: массив индексов предложений (0 - первое; 1 - второе) длины max_seq_length, соотв. предложению sentence (np.array(int))
+  :return word_input: массив индексов слов длины max_seq_length, соотв. предложению sentence (np.array(int))
+  :return tokens: массив токенов
   '''
   
   sentence = sentence.replace(' [MASK] ','[MASK]')
@@ -54,15 +54,15 @@ def tokenize1(sentence, max_seq_length):
 def tokenize2(sentence1, sentence2, max_seq_length):
   '''Токенизация двух предложения для оценки следования.
     
-  ::param::sentence1 - предложение 1 строкой (str)
-  ::param::sentence2 - предложение 2 строкой (str)
-  ::param::max_seq_length - максимальная длина последовательности (int)
+  :param sentence1: предложение 1 строкой (str)
+  :param sentence2: предложение 2 строкой (str)
+  :param max_seq_length: максимальная длина последовательности (int)
   
-  ::return::token_input - массив индексов токенов длины max_seq_length, соотв. предложению sentence (np.array(int))
-  ::return::mask_input - массив масок (1 - [MASK]; 0 - нет) длины max_seq_length, соотв. предложению sentence (np.array(int))
-  ::return::seg_input - массив индексов предложений (0 - первое; 1 - второе) длины max_seq_length, соотв. предложению sentence (np.array(int))
-  ::return::word_input - массив индексов слов длины max_seq_length, соотв. предложению sentence (np.array(int))
-  ::return::tokens - массив токенов
+  :return token_input: массив индексов токенов длины max_seq_length, соотв. предложению sentence (np.array(int))
+  :return mask_input: массив масок (1 - [MASK]; 0 - нет) длины max_seq_length, соотв. предложению sentence (np.array(int))
+  :return seg_input: массив индексов предложений (0 - первое; 1 - второе) длины max_seq_length, соотв. предложению sentence (np.array(int))
+  :return word_input: массив индексов слов длины max_seq_length, соотв. предложению sentence (np.array(int))
+  :return tokens: массив токенов
   '''
   
   tokens1 = tokenizer.tokenize(sentence1)
@@ -91,10 +91,10 @@ def tokenize2(sentence1, sentence2, max_seq_length):
   
 def get_word_input(tokens, max_seq_length):
   '''Метод для генерации массива индексов слов.
-  ::param::tokens - массив токенов
-  ::param::max_seq_length - максимальная длина последовательности (int)
+  :param tokens: массив токенов
+  :param max_seq_length: максимальная длина последовательности (int)
   
-  ::return::word_input - массив индексов слов длины max_seq_length, соотв. предложению sentence (np.array(int)) 
+  :return word_input: массив индексов слов длины max_seq_length, соотв. предложению sentence (np.array(int)) 
   '''
   iword = 1
   word_input = list()
