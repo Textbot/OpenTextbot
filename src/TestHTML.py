@@ -28,8 +28,8 @@ document.querySelector('#typehere').onchange = async function() {
     inputField.value = "";
     let resp = await getResp(val);
     let objDiv = document.getElementById("log");
-    objDiv.appendChild(paraWithText('🥺: ' + val));
-    objDiv.appendChild(paraWithText('🐻: ' + resp));
+    objDiv.appendChild(paraWithText('You: ' + val));
+    objDiv.appendChild(paraWithText('Textbot: ' + resp));
     objDiv.scrollTop = objDiv.scrollHeight;
 };
 async function colabGetResp(val) {
