@@ -168,7 +168,7 @@ def Mean(ListWE, Type=None):
     if Type == 'Cluster':
         kmeans = KMeans(n_clusters=1, random_state=0).fit(ArrayWE)
         CentroidWE = kmeans.cluster_centers_
-        WE = np.array(CentroidWE)
+        WE = np.array(CentroidWE[0])
     elif Type == 'GM':
         eps=1e-5 #Максимальная разница между двумя прогнозируемыми точками
         ArrayWE64 = ArrayWE.astype(np.float64)
