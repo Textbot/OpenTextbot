@@ -207,4 +207,4 @@ def Mean(ListWE, Type=None):
     else: #'Mean' or None
         WE = np.mean(ArrayWE, axis=0)
     
-    return WE
+  return WE
