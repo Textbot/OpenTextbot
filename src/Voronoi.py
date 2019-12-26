@@ -372,32 +372,32 @@ def VoronoiImport(Filename_Ac, Filename_LSC, Filename_LCLP,
 '''
 Метод быстрого поиска точки в сжатых ВП с использование ассиметричных кластеров Вороного.
 '''
-def VoronoiLookup(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingSize, ArrayCentroids, ListSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1):
+def VoronoiLookup(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingSize, ModelVoronoi):
     #0. Создадим список точек, в которых мы будем добавлять индексы ВП:
     CurrentListPoints = list()
     #1. Берем 2 наиболее близких к CurrentWE центроида из ArrayCentroids:
-    CurrentListID = Algebra.EuclidianMaxN(ArrayCentroids, CurrentWE, 2)
-    if (ListSubCluster[CurrentListID[0]] == 0):
-        CurrentListPoints.extend(ListClusterListPoints[CurrentListID[0]])
+    CurrentListID = Algebra.EuclidianMaxN(ModelVoronoi.ArrayCentroids, CurrentWE, 2)
+    if (ModelVoronoi.ListSubCluster[CurrentListID[0]] == 0):
+        CurrentListPoints.extend(ModelVoronoi.ListClusterListPoints[CurrentListID[0]])
     else:
-        ID = ListSubCluster[CurrentListID[0]] - len(ListCompressedWE)
-        CurrentListID2a = Algebra.EuclidianMaxN(ListArrayCentroids1[ID], CurrentWE, 2)
-        CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2a[0]])
-        CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2a[1]])
-    if (ListSubCluster[CurrentListID[1]] == 0):
-        CurrentListPoints.extend(ListClusterListPoints[CurrentListID[0]])
+        ID = ModelVoronoi.ListSubCluster[CurrentListID[0]] - len(ListCompressedWE)
+        CurrentListID2a = Algebra.EuclidianMaxN(ModelVoronoi.ListArrayCentroids1[ID], CurrentWE, 2)
+        CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints1[ID][CurrentListID2a[0]])
+        CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints1[ID][CurrentListID2a[1]])
+    if (ModelVoronoi.ListSubCluster[CurrentListID[1]] == 0):
+        CurrentListPoints.extend(ModelVoronoi.ListClusterListPoints[CurrentListID[0]])
     else:
         ID = ListSubCluster[CurrentListID[1]] - len(ListCompressedWE)
-        CurrentListID2b = Algebra.EuclidianMaxN(ListArrayCentroids1[ID], CurrentWE, 2)
-        CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2b[0]])
-        CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2b[1]])
+        CurrentListID2b = Algebra.EuclidianMaxN(ModelVoronoi.ListArrayCentroids1[ID], CurrentWE, 2)
+        CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints1[ID][CurrentListID2b[0]])
+        CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints1[ID][CurrentListID2b[1]])
     
     #5. По списку индексов CurrentListPoints1 расжимаем точки-кандидаты:
     CurrentListCompressedWE = list()
     for i in CurrentListPoints:
         CurrentListCompressedWE.append(ListCompressedWE[i])
     CurrentArrayCompressedWE = np.asarray(CurrentListCompressedWE)
-    CurrentArrayWE = Compressor.DecompressListWE(CurrentArrayCompressedWE, GlobalArrayCentroids, EmbeddingSize)
+    CurrentArrayWE = Compressor.DecompressListWE(CurrentArrayCompressedWE, ArrayCentroids, EmbeddingSize)
     #6. Ищем 1 точку-победитель:
     ID = Algebra.EuclidianMax(CurrentArrayWE, CurrentWE)
     CurrentID = CurrentListPoints[ID]
@@ -409,33 +409,33 @@ def VoronoiLookup(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingSi
 '''
 Метод быстрого поиска СПИСКА точек в сжатых ВП с использование ассиметричных кластеров Вороного.
 '''
-def VoronoiLookupN(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingSize, ArrayCentroids, ListSubCluster, ListClusterListPoints, ListArrayCentroids1, ListListClusterListPoints1, N):
+def VoronoiLookupN(CurrentWE, ListCompressedWE, ArrayCentroids, EmbeddingSize, ModelVoronoi, N):
     #0. Создадим список точек, в которых мы будем добавлять индексы ВП:
     CurrentListPoints = list()
     #1. Берем 2 наиболее близких к CurrentWE центроида из ArrayCentroids:
-    CurrentListID = Algebra.EuclidianMaxN(ArrayCentroids, CurrentWE, 2)
-    if (ListSubCluster[CurrentListID[0]] == 0):
-        CurrentListPoints.extend(ListClusterListPoints[CurrentListID[0]])
+    CurrentListID = Algebra.EuclidianMaxN(ModelVoronoi.ArrayCentroids, CurrentWE, 2)
+    if (ModelVoronoi.ListSubCluster[CurrentListID[0]] == 0):
+        CurrentListPoints.extend(ModelVoronoi.ListClusterListPoints[CurrentListID[0]])
     else:
-        ID = ListSubCluster[CurrentListID[0]] - len(ListCompressedWE)
-        CurrentListID2a = Algebra.EuclidianMaxN(ListArrayCentroids1[ID], CurrentWE, 2)
-        CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2a[0]])
-        CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2a[1]])
-    if (ListSubCluster[CurrentListID[1]] == 0):
-        CurrentListPoints.extend(ListClusterListPoints[CurrentListID[0]])
+        ID = ModelVoronoi.ListSubCluster[CurrentListID[0]] - len(ListCompressedWE)
+        CurrentListID2a = Algebra.EuclidianMaxN(ModelVoronoi.ListArrayCentroids1[ID], CurrentWE, 2)
+        CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints1[ID][CurrentListID2a[0]])
+        CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints1[ID][CurrentListID2a[1]])
+    if (ModelVoronoi.ListSubCluster[CurrentListID[1]] == 0):
+        CurrentListPoints.extend(ModelVoronoi.ListClusterListPoints[CurrentListID[0]])
     else:
-        ID = ListSubCluster[CurrentListID[1]] - len(ListCompressedWE)
-        CurrentListID2b = Algebra.EuclidianMaxN(ListArrayCentroids1[ID], CurrentWE, 2)
-        CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2b[0]])
-        CurrentListPoints.extend(ListListClusterListPoints1[ID][CurrentListID2b[1]])
+        ID = ModelVoronoi.ListSubCluster[CurrentListID[1]] - len(ListCompressedWE)
+        CurrentListID2b = Algebra.EuclidianMaxN(ModelVoronoi.ListArrayCentroids1[ID], CurrentWE, 2)
+        CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints1[ID][CurrentListID2b[0]])
+        CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints1[ID][CurrentListID2b[1]])
     
     #5. По списку индексов CurrentListPoints1 расжимаем точки-кандидаты:
     CurrentListCompressedWE = list()
     for i in CurrentListPoints:
         CurrentListCompressedWE.append(ListCompressedWE[i])
     CurrentArrayCompressedWE = np.asarray(CurrentListCompressedWE)
-    CurrentArrayWE = Compressor.DecompressListWE(CurrentArrayCompressedWE, GlobalArrayCentroids, EmbeddingSize)
-    #6. Ищем 1 точку-победитель:
+    CurrentArrayWE = Compressor.DecompressListWE(CurrentArrayCompressedWE, ArrayCentroids, EmbeddingSize)
+    #6. Ищем n точек-победителей:
     ListID = Algebra.EuclidianMaxN(CurrentArrayWE, CurrentWE, N)
     ListCurrentID = list()
     for ID in ListID:
