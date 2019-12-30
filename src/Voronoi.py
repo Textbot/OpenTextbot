@@ -367,7 +367,7 @@ def VoronoiImport(Filename, ListClusterSize, EmbeddingSize):
 '''
 Метод быстрого поиска точки в сжатых ВП с использование ассиметричных кластеров Вороного.
 '''
-def VoronoiLookup(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingSize, ModelVoronoi):
+def VoronoiLookup(CurrentWE, ListCompressedWE, ArrayCentroids, EmbeddingSize, ModelVoronoi):
     #0. Создадим список точек, в которых мы будем добавлять индексы ВП:
     CurrentListPoints = list()
     #1. Берем 2 наиболее близких к CurrentWE центроида из ArrayCentroids:
