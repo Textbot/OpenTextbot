@@ -382,7 +382,7 @@ def VoronoiLookup(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingSi
     if (ModelVoronoi.ListSubCluster[CurrentListID[1]] == 0):
         CurrentListPoints.extend(ModelVoronoi.ListClusterListPoints[CurrentListID[0]])
     else:
-        ID = ListSubCluster[CurrentListID[1]] - len(ListCompressedWE)
+        ID = ModelVoronoi.ListSubCluster[CurrentListID[1]] - len(ListCompressedWE)
         CurrentListID2b = Algebra.EuclidianMaxN(ModelVoronoi.ListArrayCentroids[ID], CurrentWE, 2)
         CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints[ID][CurrentListID2b[0]])
         CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints[ID][CurrentListID2b[1]])
