@@ -42,7 +42,7 @@ def tokenize1(sentence, max_seq_length):
 
   seg_input = [0] * max_seq_length
   
-  word_input = get_word_input(tokens)
+  word_input = get_word_input(tokens, max_seq_length)
 
   token_input = np.asarray([token_input])
   mask_input = np.asarray([mask_input])
