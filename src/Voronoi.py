@@ -376,16 +376,16 @@ def VoronoiLookup(CurrentWE, ListCompressedWE, GlobalArrayCentroids, EmbeddingSi
         CurrentListPoints.extend(ModelVoronoi.ListClusterListPoints[CurrentListID[0]])
     else:
         ID = ModelVoronoi.ListSubCluster[CurrentListID[0]] - len(ListCompressedWE)
-        CurrentListID2a = Algebra.EuclidianMaxN(ModelVoronoi.ListArrayCentroids1[ID], CurrentWE, 2)
-        CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints1[ID][CurrentListID2a[0]])
-        CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints1[ID][CurrentListID2a[1]])
+        CurrentListID2a = Algebra.EuclidianMaxN(ModelVoronoi.ListArrayCentroids[ID], CurrentWE, 2)
+        CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints[ID][CurrentListID2a[0]])
+        CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints[ID][CurrentListID2a[1]])
     if (ModelVoronoi.ListSubCluster[CurrentListID[1]] == 0):
         CurrentListPoints.extend(ModelVoronoi.ListClusterListPoints[CurrentListID[0]])
     else:
         ID = ListSubCluster[CurrentListID[1]] - len(ListCompressedWE)
-        CurrentListID2b = Algebra.EuclidianMaxN(ModelVoronoi.ListArrayCentroids1[ID], CurrentWE, 2)
-        CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints1[ID][CurrentListID2b[0]])
-        CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints1[ID][CurrentListID2b[1]])
+        CurrentListID2b = Algebra.EuclidianMaxN(ModelVoronoi.ListArrayCentroids[ID], CurrentWE, 2)
+        CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints[ID][CurrentListID2b[0]])
+        CurrentListPoints.extend(ModelVoronoi.ListListClusterListPoints[ID][CurrentListID2b[1]])
     
     #5. По списку индексов CurrentListPoints1 расжимаем точки-кандидаты:
     CurrentListCompressedWE = list()
