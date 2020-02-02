@@ -1,5 +1,3 @@
-tensorflow-gpu==1.15.0
-tensorflow-hub
 sentencepiece
 tf-sentencepiece
 simpleneighbors
