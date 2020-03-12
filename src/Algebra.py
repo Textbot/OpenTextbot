@@ -67,50 +67,45 @@ def DotProduct(WE1, WE2):
 
     return DP
 
-'''
-Метод вычисления нормы (длины) вектора
 
-Вход:
-    WE (np.array) - векторное представление;
-    EmbeddingSize (int) - размерность пространства ВП.
-    
-Выход: 
-    Norm (float) - норма вектора (длина радиус-вектора)
-'''
 def GetVectorNorm(WE, EmbeddingSize):
-  
-  Norm = 0.0
-  for i in range(EmbeddingSize):
-    Norm = Norm + WE[i]*WE[i]
-  Norm = math.sqrt(Norm)
+    '''Метод вычисления нормы (длины) вектора
 
-  return Norm
-
-'''
-Метод сложения векторов в пространстве ВП.
-
-Вход:
-    WE1 (np.array) - векторное представление 1;
-    WE2 (np.array) - векторное представление 2.
+    :param WE: векторное представление (np.array(np.float32))
+    :param EmbeddingSize: размерность пространства ВП (int)
     
-Выход: 
-    WE3 (np.array) - ВП3, полученное в результате сложения ВП1 и ВП2.
-'''
+    :return Norm: норма вектора (длина радиус-вектора) (float)
+    '''
+    Norm = 0.0
+    for i in range(EmbeddingSize):
+        Norm = Norm + WE[i]*WE[i]
+    Norm = math.sqrt(Norm)
+
+    return Norm
+
+
 def Add(WE1, WE2):
+    '''Метод сложения векторов в пространстве ВП.
+
+    :param WE1: векторное представление 1 (np.array(np.float32))
+    :param WE2: векторное представление 2 (np.array(np.float32))
     
-  for i in range(len(WE1)):
-    WE1[i] = WE1[i] + WE2[i]
-  WE3 = WE1
+    :return WE3: векторное представление 3, полученное в результате сложения ВП1 и ВП2 (np.array(np.float32))
+    '''
+    for i in range(len(WE1)):
+        WE1[i] = WE1[i] + WE2[i]
+    WE3 = WE1
     
-  return WE3
+    return WE3
 
 
 def Addn(ListWE, EmbeddingSize):
     '''Метод сложения произвольного числа векторов в пространстве ВП.
 
-    :param ListWE: список векторных представлений (list(np.array)).
-    :param EmbeddingSize: размерность пространства ВП (int).    
-    :return WE: ВП, полученное в результате сложения ВП из списка ListWE (np.array).
+    :param ListWE: список векторных представлений (list(np.array))
+    :param EmbeddingSize: размерность пространства ВП (int)
+    
+    :return WE: ВП, полученное в результате сложения векторов из списка ListWE (np.array)
     '''
     WEn = np.zeros(EmbeddingSize, dtype=float)
     for i in range(len(ListWE)):
