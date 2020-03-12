@@ -2,7 +2,6 @@
 
 """Algebra for Language Models."""
 
-#[АКТУАЛЬНО - 25.11.2019]
 
 import math
 import numpy as np
@@ -17,71 +16,56 @@ def Euclidian(ListWE, WE):
     :param ListWE: список векторных представлений (list(np.array(np.float32))) 
     :param WE: векторное представление (np.array(np.float32))
         
-    :return ListDistance: список мер близости WE к каждой точке из ListWE
-        
+    :return ListDistance: список мер близости WE к каждой точке из ListWE    
     '''    
     ListDistance = cdist(ListWE, [WE])
 
     return ListDistance
 
-'''
-Метод нахождения наиболее близкой точки по классической евклидовой метрике в пространстве ВП 
 
-    Вход:
-        ListWE (list(np.array(np.float32))) - список векторных представлений,
-            среди которых мы будем искать наиболее близкую точку к WE;
-        WE (np.array(np.float32)) - исходное векторное представление.
-        
-    Выход: 
-        ID (int) - индекс точки из ListWE, наиболее близкой к WE.
-        
-'''
 def EuclidianMax(ListWE, WE):
-    
-  ListDistance = cdist(ListWE, [WE])
-  ID = np.argmin(ListDistance)
-    
-  return ID
+    '''Метод нахождения наиболее близкой точки по классической евклидовой метрике в пространстве ВП 
 
-'''
-Метод нахождения n наиболее близких точек по классической евклидовой метрике в пространстве ВП 
-
-    Вход:
-        CurrentListWE (list(np.array(np.float32))) - список векторных представлений,
-            среди которых мы будем искать наиболее близкую точку к WE;
-        CurrentWE (np.array(np.float32)) - исходное векторное представление;
-        N (int) - число точек.
+    :param ListWE: список векторных представлений (list(np.array(np.float32))) 
+    :param WE: векторное представление (np.array(np.float32))
         
-    Выход: 
-        CurrentListID (list(int)) - список индексов точек из ListWE, наиболее близких к WE.
+    :return ID: индекс точки из ListWE, наиболее близкой к WE  (int)
+    '''
+    ListDistance = cdist(ListWE, [WE])
+    ID = np.argmin(ListDistance)
+    
+    return ID
+
+
+def EuclidianMaxN(ListWE, WE, N):
+    '''Метод нахождения n наиболее близких точек по классической евклидовой метрике в пространстве ВП 
+
+    :param ListWE: список векторных представлений (list(np.array(np.float32))) 
+    :param WE: векторное представление (np.array(np.float32))
+    :param N: число точек (int)
         
-'''
-def EuclidianMaxN(CurrentListWE, CurrentWE, N):
+    :return ListID: список индексов точек из ListWE, наиболее близких к WE  (list(int))        
+    '''
+    ListDistance = cdist(ListWE, [WE])
+    ArrayID = np.argsort(ListDistance.flatten())[0:N]
+    ListID = list(ArrayID)
     
-    ListDistance = cdist(CurrentListWE, [CurrentWE])
-    CurrentArrayID = np.argsort(ListDistance.flatten())[0:N]
-    CurrentListID = list(CurrentArrayID)
-    
-    return CurrentListID
+    return ListID
 
-'''
-Скалярное произведение ВП. 
-Может использоваться как косинусная метрика для нормализованных (!) векторов.
 
-Вход:
-    WE1 (np.array(np.float32)) - векторное представление 1;
-    WE2 (np.array(np.float32)) - векторное представление 2.
-    
-Выход: 
-    DP (np.float32) - скалярное произведение ВП1 и ВП2.
-'''
 def DotProduct(WE1, WE2):
-  
-  WE1 = np.asarray(WE1, dtype=np.float32)
-  WE2 = np.asarray(WE2, dtype=np.float32)
-  DP = np.dot(WE1, WE2)
+    '''Скалярное произведение ВП. Может использоваться как косинусная метрика для нормализованных (!) векторов.
 
-  return DP
+    :param WE1: векторное представление 1 (np.array(np.float32))
+    :param WE2: векторное представление 2 (np.array(np.float32))
+    
+    :return DP: скалярное произведение ВП1 и ВП2 (np.float32)
+    '''
+    WE1 = np.asarray(WE1, dtype=np.float32)
+    WE2 = np.asarray(WE2, dtype=np.float32)
+    DP = np.dot(WE1, WE2)
+
+    return DP
 
 '''
 Метод вычисления нормы (длины) вектора
