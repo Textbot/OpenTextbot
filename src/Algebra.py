@@ -10,7 +10,7 @@ from sklearn.cluster import KMeans
 
 
 
-def Euclidian(ListWE, WE): 
+def Euclidean(ListWE, WE): 
     '''Метод нахождения классической евклидовой метрики в пространстве ВП 
 
     :param ListWE: список векторных представлений (list(np.array(np.float32))) 
@@ -23,7 +23,7 @@ def Euclidian(ListWE, WE):
     return ListDistance
 
 
-def EuclidianMax(ListWE, WE):
+def EuclideanMax(ListWE, WE):
     '''Метод нахождения наиболее близкой точки по классической евклидовой метрике в пространстве ВП 
 
     :param ListWE: список векторных представлений (list(np.array(np.float32))) 
@@ -37,7 +37,7 @@ def EuclidianMax(ListWE, WE):
     return ID
 
 
-def EuclidianMaxN(ListWE, WE, N):
+def EuclideanMaxN(ListWE, WE, N):
     '''Метод нахождения n наиболее близких точек по классической евклидовой метрике в пространстве ВП 
 
     :param ListWE: список векторных представлений (list(np.array(np.float32))) 
