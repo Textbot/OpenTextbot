@@ -88,7 +88,7 @@ def ExportCentroids(Filename, ArrayCentroids, ListSubvectorSize, ListClusterSize
     for k in range(ListSubvectorSize):
         for j in range(ListClusterSize):
             for i in range(SubvectorSize):
-                f.write(str(ArrayCentroinds[i, j, k]) + ' ')    
+                f.write(str(ArrayCentroids[i, j, k]) + ' ')    
         f.write('\n')    
     
     return 0
