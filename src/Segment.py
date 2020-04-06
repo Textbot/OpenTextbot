@@ -39,14 +39,55 @@ word_input = get_word_input(tokens, 20)
 print(word_input)
 
 class Segment(object):
-  
-  def __init__(self, ListTE, ListTokenID):
+  '''Класс для представления сегмента
+  :param Text: текст сегмента
+  :param ListTE: список векторных представлений токенов. Смещается в процессе работы сети
+  :param ListTokenID: список индексов токенов
+  :param ListWE: список векторных представлений слов. Смещается в процессе работы сети
+  :param ListWordID: список индексов слов. Словарь формируется при чтении CONLL
+  :param SE: векторное представление сегмента. Смещается в процессе работы сети
+  '''
+  def __init__(self, Text=None, ListTE=None, ListTokenID=None, ListWE=None, ListWordID=None, SE=None, ListVertexID = None):
+    self.Text = Text
     self.ListTE = ListTE
+    self.ListWE = ListWE
     self.ListTokenID = ListTokenID
+    self.ListWordID = ListWordID
+    self.SE = SE  
+    self.ListVertexID = ListVertexID
+
+  def conll(self, ListCONLL, Vocabulary):
+    ListTE = list()
+    ListTokenID = list()
+    ListWE = list()
+    ListWordID = list()
+    Text = ''
+    for token in ListCONLL:
+      word = token.form
+      Text = Text + ' ' + word
+      head = token.head
+      wordID = 0
+      if word not in Vocabulary:
+        Vocabulary.append(word)
+        wordID = len(Vocabulary)
+      else:
+        for v in range(len(Vocabulary)):
+          if Vocabulary[v] == word:
+            wordID = v
+      ListWordID.append(wordID)
+      #Токенезируем word:
+      ListWordTokenID = bpemb_ru.encode_ids(word)
+      ListTokenID.extend(ListWordTokenID)
+      
+      ListWordTE = bpemb_ru.embed(word)
+      ListTE.extend(ListWordTE)
+      ListWE.append(Algebra.Mean(ListWordTE))
+    #self.Text = ListCONLL.text
+    self.Text = Text
+    self.ListTE = ListTE
+    self.ListWE = ListWE
+    self.ListTokenID = ListTokenID
+    self.ListWordID = ListWordID
+    self.SE = Algebra.Mean(ListTE)
   
-  def mean(self):
-    '''
-    1). 1 среднее значение
-    2). среднее значение+ нули, длина равно len(ListTE)
-    3). ListAttractor
-    '''
+    
