@@ -83,6 +83,16 @@ def GetVectorNorm(WE, EmbeddingSize):
 
     return Norm
 
+def Normalize(WE, EmbeddingSize):
+    '''Метод нормализации вектора
+    :param WE: векторное представление (np.array(np.float32))
+    :param EmbeddingSize: размерность пространства ВП (int)
+    
+    :return NormalizedWE: нормализованный вектор длины 1 (np.array(np.float32))
+    '''
+    norm = GetVectorNorm(WE, 300)
+    NormalizedWE = WE/norm
+    return NormalizedWE
 
 def Add(WE1, WE2):
     '''Метод сложения векторов в пространстве ВП.
