@@ -17,7 +17,7 @@ Today using OpenTextbot you can:
  - make BERT work with word vectors, not with token vectors using WordBERT;
 
 
-You can read about OpenTextbot and release decisions in our [original blog](https://textbot.org/).
+You can read about OpenTextbot and release decisions in our [original blog](https://textbot.github.io/).
 
 ## Usage
 
